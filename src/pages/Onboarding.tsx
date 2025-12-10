@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 import { AppShell, AppHeader, AppContent, AppFooter } from "@/components/layout/AppShell";
@@ -13,6 +13,7 @@ import { WeightSlider } from "@/components/onboarding/WeightSlider";
 import { ActivityLevelCard } from "@/components/onboarding/ActivityLevelCard";
 import { DietaryChips } from "@/components/onboarding/DietaryChips";
 import { WorkoutDaysSelector } from "@/components/onboarding/WorkoutDaysSelector";
+import { AILoadingScreen } from "@/components/onboarding/AILoadingScreen";
 import { cn } from "@/lib/utils";
 
 type Goal = "weight-loss" | "muscle" | "fit" | "flexibility";
@@ -58,6 +59,7 @@ const Onboarding: React.FC = () => {
   const [step, setStep] = useState(1);
   const [slideDirection, setSlideDirection] = useState<"left" | "right">("left");
   const [isAnimating, setIsAnimating] = useState(false);
+  const [showAILoading, setShowAILoading] = useState(false);
 
   const [data, setData] = useState<OnboardingData>({
     goal: null,
@@ -92,10 +94,15 @@ const Onboarding: React.FC = () => {
     if (step < totalSteps) {
       animateTransition("left", () => setStep(step + 1));
     } else {
-      // Save data and navigate to dashboard
+      // Show AI loading screen instead of navigating directly
       console.log("Onboarding complete:", data);
-      navigate("/dashboard");
+      setShowAILoading(true);
     }
+  };
+
+  const handleAILoadingComplete = () => {
+    // Navigate to dashboard with firstLoad flag
+    navigate("/dashboard", { state: { firstLoad: true } });
   };
 
   const handleGenderSelect = (gender: Gender) => {
@@ -305,6 +312,11 @@ const Onboarding: React.FC = () => {
 
   // Auto-hide footer for gender step (auto-advance)
   const showFooter = step !== 3;
+
+  // Show AI Loading Screen
+  if (showAILoading) {
+    return <AILoadingScreen onComplete={handleAILoadingComplete} />;
+  }
 
   return (
     <AppShell>

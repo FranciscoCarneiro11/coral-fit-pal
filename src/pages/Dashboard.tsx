@@ -1,7 +1,12 @@
-import React from "react";
-import { Camera, Flame, Beef, Wheat, Droplet, Plus, ChevronRight } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { Camera, Flame, Beef, Wheat, Droplet, Plus } from "lucide-react";
 import { AppShell, AppHeader, AppContent } from "@/components/layout/AppShell";
 import { Button } from "@/components/ui/button";
+import { HydrationTracker } from "@/components/dashboard/HydrationTracker";
+import { MealCard } from "@/components/dashboard/MealCard";
+import { DaySection } from "@/components/dashboard/DaySection";
+import { useConfetti } from "@/hooks/useConfetti";
 import { cn } from "@/lib/utils";
 
 interface MacroCardProps {
@@ -43,46 +48,96 @@ const MacroCard: React.FC<MacroCardProps> = ({
   );
 };
 
-interface MealCardProps {
-  title: string;
-  time: string;
-  calories: number;
-  items: string[];
+interface StreakBadgeProps {
+  count: number;
 }
 
-const MealCard: React.FC<MealCardProps> = ({ title, time, calories, items }) => {
+const StreakBadge: React.FC<StreakBadgeProps> = ({ count }) => {
   return (
-    <button className="w-full flex items-center gap-4 p-4 bg-card rounded-2xl shadow-card hover:shadow-lg transition-shadow text-left">
-      <div className="flex-1">
-        <div className="flex items-center gap-2 mb-1">
-          <h3 className="font-semibold text-foreground">{title}</h3>
-          <span className="text-xs text-muted-foreground">{time}</span>
-        </div>
-        <p className="text-sm text-muted-foreground line-clamp-1">
-          {items.join(", ")}
-        </p>
-        <div className="flex items-center gap-1 mt-2 text-primary">
-          <Flame className="w-4 h-4" />
-          <span className="text-sm font-medium">{calories} kcal</span>
-        </div>
-      </div>
-      <ChevronRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-    </button>
+    <div className="flex items-center gap-1 bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1.5 rounded-full shadow-sm">
+      <Flame className="w-4 h-4" />
+      <span className="text-sm font-bold">{count}</span>
+    </div>
   );
 };
 
 const Dashboard: React.FC = () => {
+  const location = useLocation();
+  const { triggerConfetti } = useConfetti();
+  const [hasTriggeredConfetti, setHasTriggeredConfetti] = useState(false);
+  const [streak] = useState(3);
+
+  // Check if this is the first load after onboarding
+  useEffect(() => {
+    const isFirstLoad = location.state?.firstLoad;
+    if (isFirstLoad && !hasTriggeredConfetti) {
+      // Trigger confetti after a short delay
+      setTimeout(() => {
+        triggerConfetti();
+        setHasTriggeredConfetti(true);
+      }, 500);
+    }
+  }, [location.state, triggerConfetti, hasTriggeredConfetti]);
+
   const today = new Date().toLocaleDateString("pt-BR", {
     weekday: "long",
     day: "numeric",
     month: "long",
   });
 
+  const todayMeals = [
+    {
+      title: "Café da manhã",
+      time: "07:30",
+      calories: 420,
+      items: ["Ovos mexidos", "Pão integral", "Café"],
+    },
+    {
+      title: "Almoço",
+      time: "12:30",
+      calories: 580,
+      items: ["Frango grelhado", "Arroz", "Salada"],
+    },
+    {
+      title: "Jantar",
+      time: "19:00",
+      calories: 240,
+      items: ["Salmão", "Legumes", "Batata doce"],
+    },
+  ];
+
+  const tomorrowMeals = [
+    {
+      title: "Café da manhã",
+      time: "07:30",
+      calories: 380,
+      items: ["Iogurte", "Granola", "Frutas"],
+    },
+    {
+      title: "Almoço",
+      time: "12:30",
+      calories: 620,
+      items: ["Carne moída", "Purê", "Brócolis"],
+    },
+  ];
+
+  const day3Meals = [
+    {
+      title: "Café da manhã",
+      time: "07:30",
+      calories: 450,
+      items: ["Panquecas", "Mel", "Banana"],
+    },
+  ];
+
   return (
     <AppShell>
-      <AppHeader title="Hoje" />
+      <AppHeader 
+        title="Hoje"
+        rightAction={<StreakBadge count={streak} />}
+      />
 
-      <AppContent className="pb-32">
+      <AppContent className="pb-36">
         {/* Date */}
         <p className="text-sm text-muted-foreground capitalize mb-6">{today}</p>
 
@@ -116,73 +171,73 @@ const Dashboard: React.FC = () => {
             bgClass="bg-amber-100"
           />
           <MacroCard
-            icon={<Droplet className="w-5 h-5 text-blue-500" />}
+            icon={<Droplet className="w-5 h-5 text-hydration-foreground" />}
             label="Gordura"
             current={35}
             goal={65}
             unit="g"
-            colorClass="bg-blue-500"
-            bgClass="bg-blue-100"
+            colorClass="bg-hydration-foreground"
+            bgClass="bg-hydration"
           />
         </div>
 
-        {/* Meals Section */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-foreground">Refeições de Hoje</h2>
+        {/* Hydration Tracker */}
+        <HydrationTracker className="mb-8" />
+
+        {/* Today's Meals */}
+        <DaySection title="Hoje">
+          <div className="flex items-center justify-between mb-4 -mt-2">
+            <span className="text-sm text-muted-foreground">Suas refeições</span>
             <button className="text-primary text-sm font-medium flex items-center gap-1">
               <Plus className="w-4 h-4" />
               Adicionar
             </button>
           </div>
+          {todayMeals.map((meal, index) => (
+            <MealCard
+              key={index}
+              title={meal.title}
+              time={meal.time}
+              calories={meal.calories}
+              items={meal.items}
+            />
+          ))}
+        </DaySection>
 
-          <div className="space-y-3">
+        {/* Tomorrow's Meals (Locked) */}
+        <DaySection title="Amanhã" locked className="mt-8">
+          {tomorrowMeals.map((meal, index) => (
             <MealCard
-              title="Café da manhã"
-              time="07:30"
-              calories={420}
-              items={["Ovos mexidos", "Pão integral", "Café"]}
+              key={index}
+              title={meal.title}
+              time={meal.time}
+              calories={meal.calories}
+              items={meal.items}
+              locked
             />
-            <MealCard
-              title="Almoço"
-              time="12:30"
-              calories={580}
-              items={["Frango grelhado", "Arroz", "Salada"]}
-            />
-            <MealCard
-              title="Jantar"
-              time="19:00"
-              calories={240}
-              items={["Salmão", "Legumes", "Batata doce"]}
-            />
-          </div>
-        </div>
+          ))}
+        </DaySection>
 
-        {/* Water Intake */}
-        <div className="p-4 bg-blue-50 rounded-2xl">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="font-semibold text-foreground">Hidratação</h3>
-            <span className="text-sm text-muted-foreground">1.5L / 2.5L</span>
-          </div>
-          <div className="flex gap-2">
-            {[...Array(8)].map((_, i) => (
-              <div
-                key={i}
-                className={cn(
-                  "flex-1 h-8 rounded-lg transition-all",
-                  i < 5 ? "bg-blue-500" : "bg-blue-200"
-                )}
-              />
-            ))}
-          </div>
-        </div>
+        {/* Day 3 Meals (Locked) */}
+        <DaySection title="Dia 3" locked className="mt-8">
+          {day3Meals.map((meal, index) => (
+            <MealCard
+              key={index}
+              title={meal.title}
+              time={meal.time}
+              calories={meal.calories}
+              items={meal.items}
+              locked
+            />
+          ))}
+        </DaySection>
       </AppContent>
 
       {/* Prominent Floating Scan Button */}
       <div className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none">
         <div className="max-w-md mx-auto px-6 pb-8 flex flex-col items-center pointer-events-auto">
           {/* Glow Effect */}
-          <div className="absolute bottom-6 w-20 h-20 bg-primary/30 rounded-full blur-xl" />
+          <div className="absolute bottom-6 w-20 h-20 bg-primary/30 rounded-full blur-xl animate-glow-pulse" />
           
           {/* Main FAB */}
           <Button 

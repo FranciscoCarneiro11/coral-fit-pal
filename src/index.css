@@ -44,6 +44,10 @@
     --light-gray: 0 0% 97%;
     --medium-gray: 0 0% 85%;
 
+    /* Hydration colors */
+    --hydration: 195 100% 95%;
+    --hydration-foreground: 195 90% 50%;
+
     /* Shadows */
     --shadow-card: 0 4px 24px -4px rgba(0, 0, 0, 0.08);
     --shadow-button: 0 8px 24px -8px hsl(355 100% 66% / 0.4);
