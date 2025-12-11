@@ -41,9 +41,9 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   const currentPath = location.pathname;
 
   const navItems = [
-    { to: "/dashboard", icon: <Home className="w-5 h-5" />, label: "Início" },
     { to: "/diet", icon: <Utensils className="w-5 h-5" />, label: "Dieta" },
     { to: "/workout", icon: <Dumbbell className="w-5 h-5" />, label: "Treino" },
+    { to: "/dashboard", icon: <Home className="w-5 h-5" />, label: "Home" },
     { to: "/profile", icon: <User className="w-5 h-5" />, label: "Perfil" },
   ];
 
