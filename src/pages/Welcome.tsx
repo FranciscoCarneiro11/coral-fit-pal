@@ -60,6 +60,13 @@ const Welcome: React.FC = () => {
         >
           Continuar
         </Button>
+        <button
+          type="button"
+          onClick={() => navigate("/auth?login=true")}
+          className="text-foreground/80 text-sm font-medium hover:text-foreground transition-colors mt-4"
+        >
+          Já tem uma conta? <span className="underline">Entrar</span>
+        </button>
         <div className="h-6" />
       </div>
     </AppShell>
