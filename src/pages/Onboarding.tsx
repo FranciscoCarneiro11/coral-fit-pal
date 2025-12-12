@@ -26,6 +26,8 @@ import {
   type Obstacle,
 } from "@/components/onboarding/steps";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 type Goal = "weight-loss" | "muscle" | "fit" | "flexibility";
 type Gender = "male" | "female" | "other";
@@ -66,10 +68,12 @@ const APP_NAME = "NutriFit";
 
 const Onboarding: React.FC = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [step, setStep] = useState(1);
   const [slideDirection, setSlideDirection] = useState<"left" | "right">("left");
   const [isAnimating, setIsAnimating] = useState(false);
   const [showAILoading, setShowAILoading] = useState(false);
+  const [generatedPlan, setGeneratedPlan] = useState<{ nutrition_plan: any; workout_plan: any } | null>(null);
 
   const [data, setData] = useState<OnboardingData>({
     previousExperience: null,
@@ -104,17 +108,79 @@ const Onboarding: React.FC = () => {
     }
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (step < totalSteps) {
       animateTransition("left", () => setStep(step + 1));
     } else {
       console.log("Onboarding complete:", data);
       setShowAILoading(true);
+      
+      // Generate plan using edge function
+      try {
+        const profileData = {
+          previous_experience: data.previousExperience,
+          gender: data.gender,
+          age: data.age,
+          height: data.height,
+          weight: data.weight,
+          target_weight: data.targetWeight,
+          professional_help: data.professionalHelp,
+          goal: data.goal,
+          obstacles: data.obstacles,
+          body_zones: data.bodyZones,
+          activity_level: data.activityLevel,
+          dietary_restrictions: data.dietaryRestrictions,
+          workout_days: data.workoutDays,
+        };
+
+        const { data: planData, error } = await supabase.functions.invoke("generate-plan", {
+          body: { profile: profileData },
+        });
+
+        if (error) {
+          console.error("Error generating plan:", error);
+          toast({
+            title: "Erro ao gerar plano",
+            description: "Não foi possível gerar seu plano personalizado. Tente novamente.",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        if (planData?.error) {
+          console.error("Plan generation error:", planData.error);
+          toast({
+            title: "Erro ao gerar plano",
+            description: planData.error,
+            variant: "destructive",
+          });
+          return;
+        }
+
+        setGeneratedPlan({
+          nutrition_plan: planData.nutrition_plan,
+          workout_plan: planData.workout_plan,
+        });
+
+        // Store profile and plan in localStorage for now (until auth is added)
+        localStorage.setItem("userProfile", JSON.stringify(profileData));
+        localStorage.setItem("nutritionPlan", JSON.stringify(planData.nutrition_plan));
+        localStorage.setItem("workoutPlan", JSON.stringify(planData.workout_plan));
+
+        console.log("Plan generated successfully:", planData);
+      } catch (err) {
+        console.error("Failed to generate plan:", err);
+        toast({
+          title: "Erro",
+          description: "Ocorreu um erro ao processar seus dados.",
+          variant: "destructive",
+        });
+      }
     }
   };
 
   const handleAILoadingComplete = () => {
-    navigate("/dashboard", { state: { firstLoad: true } });
+    navigate("/dashboard", { state: { firstLoad: true, plan: generatedPlan } });
   };
 
   const canProceed = () => {
