@@ -8,6 +8,7 @@ import { DaySection } from "@/components/dashboard/DaySection";
 import { BottomNavigation } from "@/components/navigation/BottomNavigation";
 import { useConfetti } from "@/hooks/useConfetti";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 interface MacroCardProps {
   icon: React.ReactNode;
@@ -61,11 +62,74 @@ const StreakBadge: React.FC<StreakBadgeProps> = ({ count }) => {
   );
 };
 
+interface UserProfile {
+  age: number | null;
+  gender: string | null;
+  height: number | null;
+  weight: number | null;
+  target_weight: number | null;
+  activity_level: string | null;
+  goal: string | null;
+  nutrition_plan: any;
+  workout_plan: any;
+}
+
+// Calculate BMR using Mifflin-St Jeor equation
+const calculateBMR = (weight: number, height: number, age: number, gender: string) => {
+  if (gender === "male") {
+    return 10 * weight + 6.25 * height - 5 * age + 5;
+  }
+  return 10 * weight + 6.25 * height - 5 * age - 161;
+};
+
+// Calculate TDEE based on activity level
+const getActivityMultiplier = (level: string | null) => {
+  switch (level) {
+    case "sedentary": return 1.2;
+    case "light": return 1.375;
+    case "moderate": return 1.55;
+    case "very": return 1.725;
+    default: return 1.2;
+  }
+};
+
 const Dashboard: React.FC = () => {
   const location = useLocation();
   const { triggerConfetti } = useConfetti();
   const [hasTriggeredConfetti, setHasTriggeredConfetti] = useState(false);
   const [streak] = useState(3);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          setIsLoading(false);
+          return;
+        }
+
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("age, gender, height, weight, target_weight, activity_level, goal, nutrition_plan, workout_plan")
+          .eq("user_id", user.id)
+          .maybeSingle();
+
+        if (error) {
+          console.error("Error fetching profile:", error);
+        } else {
+          setProfile(data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch profile:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   useEffect(() => {
     const isFirstLoad = location.state?.firstLoad;
@@ -76,6 +140,38 @@ const Dashboard: React.FC = () => {
       }, 500);
     }
   }, [location.state, triggerConfetti, hasTriggeredConfetti]);
+
+  // Calculate macros based on profile
+  const calculateMacros = () => {
+    if (!profile?.weight || !profile?.height || !profile?.age || !profile?.gender) {
+      return { calories: 2000, protein: 120, carbs: 250, fat: 65 };
+    }
+
+    const bmr = calculateBMR(profile.weight, profile.height, profile.age, profile.gender);
+    const tdee = bmr * getActivityMultiplier(profile.activity_level);
+    
+    // Adjust based on goal
+    let targetCalories = tdee;
+    if (profile.goal === "weight-loss") {
+      targetCalories = tdee - 500; // 500 cal deficit
+    } else if (profile.goal === "muscle") {
+      targetCalories = tdee + 300; // 300 cal surplus
+    }
+
+    // Macro distribution (protein: 30%, carbs: 40%, fat: 30%)
+    const protein = Math.round((targetCalories * 0.30) / 4);
+    const carbs = Math.round((targetCalories * 0.40) / 4);
+    const fat = Math.round((targetCalories * 0.30) / 9);
+
+    return {
+      calories: Math.round(targetCalories),
+      protein,
+      carbs,
+      fat,
+    };
+  };
+
+  const macros = calculateMacros();
 
   const today = new Date().toLocaleDateString("pt-BR", {
     weekday: "long",
@@ -128,6 +224,9 @@ const Dashboard: React.FC = () => {
     },
   ];
 
+  // Calculate consumed calories from today's meals
+  const consumedCalories = todayMeals.reduce((sum, meal) => sum + meal.calories, 0);
+
   return (
     <AppShell>
       <AppHeader 
@@ -138,13 +237,23 @@ const Dashboard: React.FC = () => {
       <AppContent className="pb-28">
         <p className="text-sm text-muted-foreground capitalize mb-6">{today}</p>
 
+        {/* Profile Summary */}
+        {profile && (
+          <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-2xl p-4 mb-6 border border-primary/20">
+            <p className="text-sm text-muted-foreground">
+              {profile.gender === "male" ? "♂" : "♀"} {profile.age} anos • {profile.height}cm • {profile.weight}kg
+              {profile.target_weight && ` → ${profile.target_weight}kg`}
+            </p>
+          </div>
+        )}
+
         {/* Macro Cards */}
         <div className="grid grid-cols-4 gap-3 mb-8">
           <MacroCard
             icon={<Flame className="w-5 h-5 text-primary" />}
             label="Calorias"
-            current={1240}
-            goal={2000}
+            current={consumedCalories}
+            goal={macros.calories}
             unit=""
             colorClass="bg-primary"
             bgClass="bg-coral-light"
@@ -153,7 +262,7 @@ const Dashboard: React.FC = () => {
             icon={<Beef className="w-5 h-5 text-red-500" />}
             label="Proteína"
             current={45}
-            goal={120}
+            goal={macros.protein}
             unit="g"
             colorClass="bg-red-500"
             bgClass="bg-red-100"
@@ -162,7 +271,7 @@ const Dashboard: React.FC = () => {
             icon={<Wheat className="w-5 h-5 text-amber-500" />}
             label="Carbos"
             current={130}
-            goal={250}
+            goal={macros.carbs}
             unit="g"
             colorClass="bg-amber-500"
             bgClass="bg-amber-100"
@@ -171,7 +280,7 @@ const Dashboard: React.FC = () => {
             icon={<Droplet className="w-5 h-5 text-hydration-foreground" />}
             label="Gordura"
             current={35}
-            goal={65}
+            goal={macros.fat}
             unit="g"
             colorClass="bg-hydration-foreground"
             bgClass="bg-hydration"
