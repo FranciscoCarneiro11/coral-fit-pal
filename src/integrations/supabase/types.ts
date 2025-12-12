@@ -99,19 +99,27 @@ export type Database = {
         Row: {
           activity_level: string | null
           age: number | null
+          avatar_url: string | null
           body_zones: string[] | null
           created_at: string | null
+          dark_mode: boolean | null
           dietary_restrictions: string[] | null
+          email_notifications: boolean | null
+          first_name: string | null
           gender: string | null
           goal: string | null
           height: number | null
           id: string
+          last_name: string | null
           nutrition_plan: Json | null
           obstacles: string[] | null
           previous_experience: boolean | null
           professional_help: boolean | null
+          push_notifications: boolean | null
+          starting_weight: number | null
           target_weight: number | null
           updated_at: string | null
+          use_metric: boolean | null
           user_id: string
           weight: number | null
           workout_days: number | null
@@ -120,19 +128,27 @@ export type Database = {
         Insert: {
           activity_level?: string | null
           age?: number | null
+          avatar_url?: string | null
           body_zones?: string[] | null
           created_at?: string | null
+          dark_mode?: boolean | null
           dietary_restrictions?: string[] | null
+          email_notifications?: boolean | null
+          first_name?: string | null
           gender?: string | null
           goal?: string | null
           height?: number | null
           id?: string
+          last_name?: string | null
           nutrition_plan?: Json | null
           obstacles?: string[] | null
           previous_experience?: boolean | null
           professional_help?: boolean | null
+          push_notifications?: boolean | null
+          starting_weight?: number | null
           target_weight?: number | null
           updated_at?: string | null
+          use_metric?: boolean | null
           user_id: string
           weight?: number | null
           workout_days?: number | null
@@ -141,19 +157,27 @@ export type Database = {
         Update: {
           activity_level?: string | null
           age?: number | null
+          avatar_url?: string | null
           body_zones?: string[] | null
           created_at?: string | null
+          dark_mode?: boolean | null
           dietary_restrictions?: string[] | null
+          email_notifications?: boolean | null
+          first_name?: string | null
           gender?: string | null
           goal?: string | null
           height?: number | null
           id?: string
+          last_name?: string | null
           nutrition_plan?: Json | null
           obstacles?: string[] | null
           previous_experience?: boolean | null
           professional_help?: boolean | null
+          push_notifications?: boolean | null
+          starting_weight?: number | null
           target_weight?: number | null
           updated_at?: string | null
+          use_metric?: boolean | null
           user_id?: string
           weight?: number | null
           workout_days?: number | null
