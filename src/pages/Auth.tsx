@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Apple, Mail, Loader2, Sparkles } from "lucide-react";
+import { Mail, Loader2, Sparkles } from "lucide-react";
 import { AppShell, AppContent } from "@/components/layout/AppShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -167,26 +167,6 @@ const Auth: React.FC = () => {
     }
   };
 
-  const handleAppleAuth = async () => {
-    setIsLoading(true);
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "apple",
-        options: {
-          redirectTo: `${window.location.origin}/auth?trigger=save_plan`,
-        },
-      });
-      if (error) throw error;
-    } catch (error: any) {
-      console.error("Apple auth error:", error);
-      toast({
-        title: "Erro",
-        description: error.message || "Erro ao conectar com Apple.",
-        variant: "destructive",
-      });
-      setIsLoading(false);
-    }
-  };
 
   return (
     <AppShell className="bg-background">
@@ -252,16 +232,6 @@ const Auth: React.FC = () => {
             Continuar com Google
           </Button>
 
-          <Button
-            variant="outline"
-            size="lg"
-            className="w-full h-14 text-base font-medium border-2 hover:bg-secondary/50 transition-all"
-            onClick={handleAppleAuth}
-            disabled={isLoading}
-          >
-            <Apple className="w-5 h-5 mr-3" />
-            Continuar com Apple
-          </Button>
         </div>
 
         {/* Divider */}
