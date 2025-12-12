@@ -1,5 +1,6 @@
 import React from "react";
 import { cn } from "@/lib/utils";
+import { ArrowLeft } from "lucide-react";
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -33,6 +34,8 @@ interface AppHeaderProps {
   leftAction?: React.ReactNode;
   rightAction?: React.ReactNode;
   title?: string;
+  showBack?: boolean;
+  onBack?: () => void;
 }
 
 export const AppHeader: React.FC<AppHeaderProps> = ({
@@ -41,6 +44,8 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
   leftAction,
   rightAction,
   title,
+  showBack,
+  onBack,
 }) => {
   return (
     <header
@@ -49,7 +54,18 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
         className
       )}
     >
-      <div className="w-12 flex justify-start">{leftAction}</div>
+      <div className="w-12 flex justify-start">
+        {showBack && onBack ? (
+          <button
+            onClick={onBack}
+            className="p-2 -ml-2 rounded-full hover:bg-muted transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5 text-foreground" />
+          </button>
+        ) : (
+          leftAction
+        )}
+      </div>
       <div className="flex-1 text-center">
         {title && <h1 className="text-lg font-semibold text-foreground">{title}</h1>}
         {children}

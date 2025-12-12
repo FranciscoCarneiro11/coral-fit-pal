@@ -13,6 +13,10 @@ import Dashboard from "./pages/Dashboard";
 import Diet from "./pages/Diet";
 import Workout from "./pages/Workout";
 import Profile from "./pages/Profile";
+import Settings from "./pages/Settings";
+import Notifications from "./pages/Notifications";
+import Privacy from "./pages/Privacy";
+import Help from "./pages/Help";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,6 +37,10 @@ const App = () => (
             <Route path="/diet" element={<ProtectedRoute><Diet /></ProtectedRoute>} />
             <Route path="/workout" element={<ProtectedRoute><Workout /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+            <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
+            <Route path="/privacy" element={<ProtectedRoute><Privacy /></ProtectedRoute>} />
+            <Route path="/help" element={<ProtectedRoute><Help /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
