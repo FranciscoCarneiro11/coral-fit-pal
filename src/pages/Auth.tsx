@@ -13,21 +13,29 @@ const Auth: React.FC = () => {
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
   
-  const [isLogin, setIsLogin] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [hasPendingPlan, setHasPendingPlan] = useState(false);
 
   const trigger = searchParams.get("trigger");
+  const loginParam = searchParams.get("login");
+
+  // Check for pending quiz data and set login mode
+  const [isLogin, setIsLogin] = useState(loginParam === "true");
 
   useEffect(() => {
-    // Check for pending quiz data
     const profile = localStorage.getItem("userProfile");
     const nutritionPlan = localStorage.getItem("nutritionPlan");
     const workoutPlan = localStorage.getItem("workoutPlan");
-    setHasPendingPlan(!!(profile && nutritionPlan && workoutPlan));
-  }, []);
+    const hasPending = !!(profile && nutritionPlan && workoutPlan);
+    setHasPendingPlan(hasPending);
+    
+    // Default to login mode if coming from Welcome page OR if no pending plan
+    if (loginParam === "true" || !hasPending) {
+      setIsLogin(true);
+    }
+  }, [loginParam]);
 
   useEffect(() => {
     // Listen for auth state changes
