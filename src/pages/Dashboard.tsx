@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
-import { Flame, Beef, Wheat, Droplet, Plus } from "lucide-react";
+import { Flame, Beef, Wheat, Droplet, Plus, Sparkles } from "lucide-react";
 import { AppShell, AppHeader, AppContent } from "@/components/layout/AppShell";
 import { HydrationTracker } from "@/components/dashboard/HydrationTracker";
 import { MealCard } from "@/components/dashboard/MealCard";
 import { DaySection } from "@/components/dashboard/DaySection";
 import { BottomNavigation } from "@/components/navigation/BottomNavigation";
+import { AddMealModal } from "@/components/dashboard/AddMealModal";
 import { useConfetti } from "@/hooks/useConfetti";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
 
 interface MacroCardProps {
   icon: React.ReactNode;
@@ -114,6 +117,43 @@ const Dashboard: React.FC = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [todayMeals, setTodayMeals] = useState<Meal[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAddMealOpen, setIsAddMealOpen] = useState(false);
+  const [isGeneratingPlan, setIsGeneratingPlan] = useState(false);
+
+  const fetchMeals = useCallback(async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const today = new Date().toISOString().split('T')[0];
+      
+      const { data, error } = await supabase
+        .from("meals")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("date", today)
+        .order("time", { ascending: true });
+
+      if (error) {
+        console.error("Error fetching meals:", error);
+      } else {
+        setTodayMeals(data?.map(m => ({
+          id: m.id,
+          title: m.title,
+          time: m.time,
+          calories: m.calories,
+          protein: Number(m.protein) || 0,
+          carbs: Number(m.carbs) || 0,
+          fat: Number(m.fat) || 0,
+          items: m.items || [],
+          completed: m.completed || false,
+          meal_type: m.meal_type,
+        })) || []);
+      }
+    } catch (err) {
+      console.error("Failed to fetch meals:", err);
+    }
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -172,6 +212,62 @@ const Dashboard: React.FC = () => {
 
     fetchData();
   }, []);
+
+  const handleGenerateMealPlan = async () => {
+    setIsGeneratingPlan(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({
+          title: "Erro",
+          description: "Você precisa estar logado",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-meal-plan`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({ daysToGenerate: 7 }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        toast({
+          title: "Erro",
+          description: result.error || "Não foi possível gerar o plano",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Sucesso!",
+        description: result.message,
+      });
+
+      // Refresh meals
+      await fetchMeals();
+      triggerConfetti();
+    } catch (err) {
+      console.error("Failed to generate meal plan:", err);
+      toast({
+        title: "Erro",
+        description: "Ocorreu um erro inesperado",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingPlan(false);
+    }
+  };
 
   useEffect(() => {
     const isFirstLoad = location.state?.firstLoad;
@@ -317,7 +413,10 @@ const Dashboard: React.FC = () => {
         <DaySection title="Hoje">
           <div className="flex items-center justify-between mb-4 -mt-2">
             <span className="text-sm text-muted-foreground">Suas refeições</span>
-            <button className="text-primary text-sm font-medium flex items-center gap-1">
+            <button 
+              className="text-primary text-sm font-medium flex items-center gap-1"
+              onClick={() => setIsAddMealOpen(true)}
+            >
               <Plus className="w-4 h-4" />
               Adicionar
             </button>
@@ -327,9 +426,16 @@ const Dashboard: React.FC = () => {
               Carregando...
             </div>
           ) : todayMeals.length === 0 ? (
-            <div className="py-8 text-center text-muted-foreground bg-muted/30 rounded-2xl">
-              <p>Nenhuma refeição registada hoje</p>
-              <p className="text-xs mt-1">Adicione sua primeira refeição</p>
+            <div className="py-8 text-center bg-muted/30 rounded-2xl space-y-4">
+              <p className="text-muted-foreground">Nenhuma refeição registada hoje</p>
+              <Button
+                onClick={handleGenerateMealPlan}
+                disabled={isGeneratingPlan}
+                className="gap-2"
+              >
+                <Sparkles className="w-4 h-4" />
+                {isGeneratingPlan ? "Gerando plano..." : "Gerar Plano com IA"}
+              </Button>
             </div>
           ) : (
             todayMeals.map((meal) => (
@@ -344,9 +450,30 @@ const Dashboard: React.FC = () => {
             ))
           )}
         </DaySection>
+
+        {/* AI Generate Button (when meals exist) */}
+        {!isLoading && todayMeals.length > 0 && (
+          <div className="mt-6">
+            <Button
+              variant="outline"
+              onClick={handleGenerateMealPlan}
+              disabled={isGeneratingPlan}
+              className="w-full gap-2"
+            >
+              <Sparkles className="w-4 h-4" />
+              {isGeneratingPlan ? "Gerando novo plano..." : "Regenerar Plano Semanal"}
+            </Button>
+          </div>
+        )}
       </AppContent>
 
       <BottomNavigation />
+
+      <AddMealModal
+        open={isAddMealOpen}
+        onOpenChange={setIsAddMealOpen}
+        onMealAdded={fetchMeals}
+      />
     </AppShell>
   );
 };
