@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { X, Barcode, Plus } from "lucide-react";
+import { Barcode, Plus } from "lucide-react";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -32,6 +33,20 @@ const mealTypes = [
   { value: "snack", label: "Lanche" },
 ];
 
+// Validation schema for meal form
+const mealSchema = z.object({
+  title: z.string()
+    .trim()
+    .min(1, "Por favor, insira o nome da refeição")
+    .max(200, "O nome da refeição deve ter no máximo 200 caracteres"),
+  mealType: z.enum(["breakfast", "lunch", "dinner", "snack"]),
+  calories: z.number().min(0, "Calorias não pode ser negativo").max(99999, "Valor de calorias muito alto"),
+  protein: z.number().min(0, "Proteína não pode ser negativo").max(9999, "Valor de proteína muito alto"),
+  carbs: z.number().min(0, "Carboidratos não pode ser negativo").max(9999, "Valor de carboidratos muito alto"),
+  fat: z.number().min(0, "Gordura não pode ser negativo").max(9999, "Valor de gordura muito alto"),
+  time: z.string().optional(),
+});
+
 export const AddMealModal: React.FC<AddMealModalProps> = ({
   open,
   onOpenChange,
@@ -47,14 +62,39 @@ export const AddMealModal: React.FC<AddMealModalProps> = ({
     fat: "",
     time: "",
   });
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrors({});
+
+    // Parse and validate form data
+    const parsedData = {
+      title: formData.title,
+      mealType: formData.mealType as "breakfast" | "lunch" | "dinner" | "snack",
+      calories: parseFloat(formData.calories) || 0,
+      protein: parseFloat(formData.protein) || 0,
+      carbs: parseFloat(formData.carbs) || 0,
+      fat: parseFloat(formData.fat) || 0,
+      time: formData.time || undefined,
+    };
+
+    const result = mealSchema.safeParse(parsedData);
     
-    if (!formData.title.trim()) {
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      result.error.errors.forEach((err) => {
+        if (err.path[0]) {
+          fieldErrors[err.path[0] as string] = err.message;
+        }
+      });
+      setErrors(fieldErrors);
+      
+      // Show first error as toast
+      const firstError = result.error.errors[0];
       toast({
-        title: "Erro",
-        description: "Por favor, insira o nome da refeição",
+        title: "Erro de validação",
+        description: firstError.message,
         variant: "destructive",
       });
       return;
