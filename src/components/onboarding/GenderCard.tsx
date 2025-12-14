@@ -1,6 +1,7 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 import femaleFigure from "@/assets/female-figure.png";
+import maleFigure from "@/assets/male-figure.png";
 
 interface GenderCardProps {
   gender: "male" | "female";
@@ -31,19 +32,17 @@ export const GenderCard: React.FC<GenderCardProps> = ({
       {/* Body Figure */}
       <div className="flex-1 flex items-center justify-center w-full">
         {isMale ? (
-          <svg
-            viewBox="0 0 24 24"
-            fill="currentColor"
+          <img
+            src={maleFigure}
+            alt="Homem"
             className={cn(
-              "w-32 h-32 transition-all duration-300",
-              selected ? "text-primary" : "text-muted-foreground"
+              "h-48 w-auto object-contain transition-all duration-300",
+              selected ? "brightness-100" : "brightness-75 grayscale"
             )}
             style={{
               filter: selected ? "drop-shadow(0 4px 20px hsl(var(--primary) / 0.5))" : "none"
             }}
-          >
-            <path d="M12 2C10.9 2 10 2.9 10 4s.9 2 2 2 2-.9 2-2-.9-2-2-2zm4 5h-1.5c-.2 0-.4.1-.5.2l-1 1.5c-.3.5-.9.7-1.5.4-.5-.3-.7-.9-.4-1.5l.5-.8C11.8 6.4 12.5 6 13.2 6H16c.6 0 1 .4 1 1v3h1.5c.8 0 1.5.7 1.5 1.5v6c0 .8-.7 1.5-1.5 1.5H17v3c0 .6-.4 1-1 1s-1-.4-1-1v-4h-2v4c0 .6-.4 1-1 1s-1-.4-1-1v-9.5l-1.3 2c-.3.4-.8.5-1.2.2-.4-.3-.5-.8-.2-1.2l2-3c.4-.6 1.1-1 1.7-1H16V7z" />
-          </svg>
+          />
         ) : (
           <img
             src={femaleFigure}
