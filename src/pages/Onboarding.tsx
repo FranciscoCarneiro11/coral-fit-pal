@@ -64,7 +64,7 @@ interface OnboardingData {
   workoutDays: number;
 }
 
-const APP_NAME = "NutriFit";
+const APP_NAME = "NutriOne";
 
 const Onboarding: React.FC = () => {
   const navigate = useNavigate();

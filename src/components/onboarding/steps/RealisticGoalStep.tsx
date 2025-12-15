@@ -11,7 +11,7 @@ interface RealisticGoalStepProps {
 export const RealisticGoalStep: React.FC<RealisticGoalStepProps> = ({
   currentWeight,
   targetWeight,
-  appName = "NutriFit",
+  appName = "NutriOne",
   className,
 }) => {
   const weightDifference = Math.abs(targetWeight - currentWeight);
