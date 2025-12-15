@@ -1,13 +1,12 @@
 import React from "react";
 import { Star } from "lucide-react";
-
 interface SocialProofStepProps {
   appName: string;
 }
-
-export const SocialProofStep: React.FC<SocialProofStepProps> = ({ appName }) => {
-  return (
-    <div className="flex flex-col items-center text-center">
+export const SocialProofStep: React.FC<SocialProofStepProps> = ({
+  appName
+}) => {
+  return <div className="flex flex-col items-center text-center">
       {/* Header */}
       <h1 className="text-3xl font-bold text-foreground mb-6 self-start text-left">
         Avalie-nos
@@ -20,15 +19,10 @@ export const SocialProofStep: React.FC<SocialProofStepProps> = ({ appName }) => 
           <div className="flex items-center gap-2">
             <span className="text-2xl font-bold text-foreground">4.8</span>
             <div className="flex">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <Star
-                  key={star}
-                  className="w-5 h-5 fill-amber-400 text-amber-400"
-                />
-              ))}
+              {[1, 2, 3, 4, 5].map(star => <Star key={star} className="w-5 h-5 fill-amber-400 text-amber-400" />)}
             </div>
           </div>
-          <span className="text-sm text-muted-foreground">200K+ Avaliações do App</span>
+          <span className="text-sm text-muted-foreground">2K+ Avaliações do App</span>
         </div>
         <span className="text-amber-500 text-2xl">🏆</span>
       </div>
@@ -63,12 +57,7 @@ export const SocialProofStep: React.FC<SocialProofStepProps> = ({ appName }) => 
           <div className="flex flex-col items-start">
             <span className="font-semibold text-foreground">Jake Sullivan</span>
             <div className="flex">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <Star
-                  key={star}
-                  className="w-4 h-4 fill-amber-400 text-amber-400"
-                />
-              ))}
+              {[1, 2, 3, 4, 5].map(star => <Star key={star} className="w-4 h-4 fill-amber-400 text-amber-400" />)}
             </div>
           </div>
         </div>
@@ -76,6 +65,5 @@ export const SocialProofStep: React.FC<SocialProofStepProps> = ({ appName }) => 
           Perdi 6,8 kg em 2 meses! Eu estava prestes a desistir, mas decidi testar este app e funcionou :)
         </p>
       </div>
-    </div>
-  );
+    </div>;
 };
