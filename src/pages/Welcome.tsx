@@ -3,6 +3,29 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Users, Star, Dumbbell, TrendingUp, Target, Flame } from "lucide-react";
 
+const testimonials = [
+  {
+    text: "Perdi 5kg em apenas 3 semanas sem passar fome! O plano adapta-se mesmo à minha rotina.",
+    name: "Sofia M."
+  },
+  {
+    text: "Finalmente consegui organizar as minhas macros. A NutriOne mudou completamente o meu treino.",
+    name: "Tiago R."
+  },
+  {
+    text: "A melhor app de nutrição que já usei. Simples, direta e os resultados aparecem.",
+    name: "Ana P."
+  },
+  {
+    text: "Sinto-me com muito mais energia durante o dia. Recomendo a toda a gente!",
+    name: "Pedro S."
+  },
+  {
+    text: "O acompanhamento diário faz toda a diferença. Nunca foi tão fácil ser saudável.",
+    name: "Beatriz L."
+  }
+];
+
 const Welcome: React.FC = () => {
   const navigate = useNavigate();
 
@@ -19,20 +42,20 @@ const Welcome: React.FC = () => {
       <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-coral/5 rounded-full blur-3xl pointer-events-none" />
       
       {/* Content */}
-      <div className="flex-1 flex flex-col px-6 pt-12 pb-8 relative z-10">
+      <div className="flex-1 flex flex-col px-6 pt-12 pb-4 relative z-10">
         {/* Hero Typography */}
-        <div className="text-center mb-8 animate-fade-in">
-          <h1 className="text-4xl font-extrabold text-white leading-tight mb-3">
-            Transform Your<br />
-            <span className="text-coral">Body & Mind</span>
+        <div className="text-center mb-6 animate-fade-in">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-white leading-tight mb-3">
+            <span className="text-coral">Transforme</span> o seu corpo<br />
+            e saúde com a <span className="text-coral">NutriOne</span>.
           </h1>
-          <p className="text-slate-400 text-base max-w-xs mx-auto">
-            AI-powered plans tailored to your unique biology.
+          <p className="text-slate-400 text-sm sm:text-base max-w-sm mx-auto leading-relaxed">
+            Junte-se a milhares de pessoas que já atingiram os seus objetivos com planos personalizados e IA.
           </p>
         </div>
 
         {/* Glass Stats Cards */}
-        <div className="flex gap-3 justify-center mb-8 animate-slide-up" style={{ animationDelay: "0.1s" }}>
+        <div className="flex gap-3 justify-center mb-6 animate-slide-up" style={{ animationDelay: "0.1s" }}>
           {stats.map((stat, index) => (
             <div
               key={stat.label}
@@ -47,10 +70,10 @@ const Welcome: React.FC = () => {
         </div>
 
         {/* Phone Mockup */}
-        <div className="flex-1 flex items-center justify-center mb-6">
+        <div className="flex-1 flex items-center justify-center mb-4">
           <div className="animate-float">
             {/* Phone Frame */}
-            <div className="relative w-52 h-[340px] bg-gradient-to-b from-slate-800 to-slate-900 rounded-[2.5rem] p-2 shadow-2xl border border-slate-700/50">
+            <div className="relative w-48 h-[300px] bg-gradient-to-b from-slate-800 to-slate-900 rounded-[2.5rem] p-2 shadow-2xl border border-slate-700/50">
               {/* Phone Notch */}
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-6 bg-slate-950 rounded-b-2xl" />
               
@@ -60,7 +83,7 @@ const Welcome: React.FC = () => {
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-coral/20 rounded-full blur-2xl" />
                 
                 {/* Progress Ring */}
-                <div className="relative w-28 h-28 mb-4">
+                <div className="relative w-24 h-24 mb-3">
                   <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
                     {/* Background Circle */}
                     <circle
@@ -92,38 +115,60 @@ const Welcome: React.FC = () => {
                     </defs>
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-2xl font-bold text-white">75%</span>
-                    <span className="text-[10px] text-slate-500 uppercase">Meta</span>
+                    <span className="text-xl font-bold text-white">75%</span>
+                    <span className="text-[9px] text-slate-500 uppercase">Meta</span>
                   </div>
                 </div>
 
                 {/* Mini Stats Row */}
-                <div className="flex gap-4 text-center">
+                <div className="flex gap-3 text-center">
                   <div className="flex flex-col items-center">
-                    <div className="w-8 h-8 rounded-full bg-coral/20 flex items-center justify-center mb-1">
-                      <Flame className="w-4 h-4 text-coral" />
+                    <div className="w-7 h-7 rounded-full bg-coral/20 flex items-center justify-center mb-1">
+                      <Flame className="w-3.5 h-3.5 text-coral" />
                     </div>
-                    <span className="text-white text-xs font-semibold">1,234</span>
-                    <span className="text-slate-600 text-[8px]">kcal</span>
+                    <span className="text-white text-[10px] font-semibold">1,234</span>
+                    <span className="text-slate-600 text-[7px]">kcal</span>
                   </div>
                   <div className="flex flex-col items-center">
-                    <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center mb-1">
-                      <Target className="w-4 h-4 text-emerald-400" />
+                    <div className="w-7 h-7 rounded-full bg-emerald-500/20 flex items-center justify-center mb-1">
+                      <Target className="w-3.5 h-3.5 text-emerald-400" />
                     </div>
-                    <span className="text-white text-xs font-semibold">5/6</span>
-                    <span className="text-slate-600 text-[8px]">meals</span>
+                    <span className="text-white text-[10px] font-semibold">5/6</span>
+                    <span className="text-slate-600 text-[7px]">meals</span>
                   </div>
                   <div className="flex flex-col items-center">
-                    <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center mb-1">
-                      <TrendingUp className="w-4 h-4 text-blue-400" />
+                    <div className="w-7 h-7 rounded-full bg-blue-500/20 flex items-center justify-center mb-1">
+                      <TrendingUp className="w-3.5 h-3.5 text-blue-400" />
                     </div>
-                    <span className="text-white text-xs font-semibold">+12%</span>
-                    <span className="text-slate-600 text-[8px]">streak</span>
+                    <span className="text-white text-[10px] font-semibold">+12%</span>
+                    <span className="text-slate-600 text-[7px]">streak</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Testimonials Marquee */}
+      <div className="relative z-10 overflow-hidden py-4 mb-2">
+        <div className="flex animate-marquee">
+          {[...testimonials, ...testimonials].map((testimonial, index) => (
+            <div
+              key={index}
+              className="flex-shrink-0 w-72 mx-3 backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-4"
+            >
+              <div className="flex gap-0.5 mb-2">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-4 h-4 fill-coral text-coral" />
+                ))}
+              </div>
+              <p className="text-slate-300 text-sm mb-3 leading-relaxed">
+                "{testimonial.text}"
+              </p>
+              <p className="text-coral font-semibold text-sm">— {testimonial.name}</p>
+            </div>
+          ))}
         </div>
       </div>
 
