@@ -36,14 +36,11 @@ export const SocialProofStep: React.FC<SocialProofStepProps> = ({
       <div className="flex items-center justify-center mb-2">
         <div className="flex -space-x-4">
           <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 border-3 border-background flex items-center justify-center text-white font-semibold text-lg">
-            M
-          </div>
+        </div>
           <div className="w-14 h-14 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 border-3 border-background flex items-center justify-center text-white font-semibold text-lg">
-            A
-          </div>
+        </div>
           <div className="w-14 h-14 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 border-3 border-background flex items-center justify-center text-white font-semibold text-lg">
-            J
-          </div>
+        </div>
         </div>
       </div>
       <p className="text-sm text-muted-foreground mb-8">3k+ Usuários do {appName}</p>
