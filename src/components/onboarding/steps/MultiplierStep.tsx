@@ -7,7 +7,7 @@ interface MultiplierStepProps {
 }
 
 export const MultiplierStep: React.FC<MultiplierStepProps> = ({
-  appName = "NutriFit",
+  appName = "NutriOne",
   className,
 }) => {
   return (
