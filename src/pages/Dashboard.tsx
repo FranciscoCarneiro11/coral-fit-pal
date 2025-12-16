@@ -220,34 +220,24 @@ const Dashboard: React.FC = () => {
   const handleGenerateMealPlan = async () => {
     setIsGeneratingPlan(true);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
+      const { data, error } = await supabase.functions.invoke('generate-meal-plan', {
+        body: { daysToGenerate: 7 },
+      });
+
+      if (error) {
+        console.error("Edge function error:", error);
         toast({
           title: "Erro",
-          description: "Você precisa estar logado",
+          description: error.message || "Não foi possível gerar o plano",
           variant: "destructive",
         });
         return;
       }
 
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-meal-plan`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session.access_token}`,
-          },
-          body: JSON.stringify({ daysToGenerate: 7 }),
-        }
-      );
-
-      const result = await response.json();
-
-      if (!response.ok) {
+      if (data?.error) {
         toast({
           title: "Erro",
-          description: result.error || "Não foi possível gerar o plano",
+          description: data.error,
           variant: "destructive",
         });
         return;
@@ -255,17 +245,17 @@ const Dashboard: React.FC = () => {
 
       toast({
         title: "Sucesso!",
-        description: result.message,
+        description: data?.message || "Plano alimentar gerado com sucesso!",
       });
 
       // Refresh meals
       await fetchMeals();
       triggerConfetti();
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to generate meal plan:", err);
       toast({
         title: "Erro",
-        description: "Ocorreu um erro inesperado",
+        description: err?.message || "Ocorreu um erro inesperado. Tente novamente.",
         variant: "destructive",
       });
     } finally {
