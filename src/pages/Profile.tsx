@@ -18,6 +18,8 @@ interface ProfileData {
   goal: string | null;
   starting_weight: number | null;
   created_at: string | null;
+  active_days_count: number | null;
+  last_active_date: string | null;
 }
 
 const Profile: React.FC = () => {
@@ -33,12 +35,43 @@ const Profile: React.FC = () => {
 
     const { data, error } = await supabase
       .from("profiles")
-      .select("first_name, last_name, avatar_url, weight, height, target_weight, goal, starting_weight, created_at")
+      .select("first_name, last_name, avatar_url, weight, height, target_weight, goal, starting_weight, created_at, active_days_count, last_active_date")
       .eq("user_id", user.id)
       .single();
 
     if (!error && data) {
       setProfile(data);
+      // Check and update active days on first visit of the day
+      await checkAndUpdateActiveDays(data);
+    }
+  };
+
+  const checkAndUpdateActiveDays = async (profileData: ProfileData) => {
+    if (!user) return;
+    
+    const today = new Date().toISOString().split('T')[0];
+    const lastActiveDate = profileData.last_active_date;
+    
+    // If already visited today, do nothing
+    if (lastActiveDate === today) return;
+    
+    // First visit of the day - increment active days
+    const newActiveDays = (profileData.active_days_count || 0) + 1;
+    
+    const { error } = await supabase
+      .from("profiles")
+      .update({ 
+        active_days_count: newActiveDays,
+        last_active_date: today 
+      })
+      .eq("user_id", user.id);
+    
+    if (!error) {
+      setProfile(prev => prev ? {
+        ...prev,
+        active_days_count: newActiveDays,
+        last_active_date: today
+      } : null);
     }
   };
 
@@ -71,10 +104,8 @@ const Profile: React.FC = () => {
     ? `${profile.first_name}${profile.last_name ? ` ${profile.last_name}` : ""}`
     : "Sem Nome";
 
-  // Calculate stats
-  const activeDays = profile?.created_at
-    ? Math.floor((Date.now() - new Date(profile.created_at).getTime()) / (1000 * 60 * 60 * 24))
-    : 0;
+  // Calculate stats - now using tracked active days
+  const activeDays = profile?.active_days_count || 0;
 
   const kgLost = profile?.starting_weight && profile?.weight
     ? Math.max(0, profile.starting_weight - profile.weight)
