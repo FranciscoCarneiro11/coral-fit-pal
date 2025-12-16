@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { AppShell, AppHeader, AppContent } from "@/components/layout/AppShell";
 import { BottomNavigation } from "@/components/navigation/BottomNavigation";
@@ -9,6 +9,93 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { FoodAnalysisResult } from "@/services/foodScanner";
+
+// Animated meal card component for Diet page
+interface AnimatedMealCardProps {
+  meal: MealItem;
+  onToggle: () => void;
+  isPending: boolean;
+}
+
+const AnimatedMealCard: React.FC<AnimatedMealCardProps> = ({ meal, onToggle, isPending }) => {
+  const [isAnimating, setIsAnimating] = useState(false);
+  const prevCompletedRef = useRef(meal.completed);
+
+  useEffect(() => {
+    if (prevCompletedRef.current !== meal.completed) {
+      setIsAnimating(true);
+      const timer = setTimeout(() => setIsAnimating(false), 400);
+      prevCompletedRef.current = meal.completed;
+      return () => clearTimeout(timer);
+    }
+  }, [meal.completed]);
+
+  const handleClick = () => {
+    setIsAnimating(true);
+    setTimeout(() => setIsAnimating(false), 400);
+    onToggle();
+  };
+
+  return (
+    <div
+      className={cn(
+        "bg-card rounded-2xl p-4 shadow-card border border-border flex items-center gap-4 transition-all duration-300",
+        meal.completed && "opacity-70 bg-muted/50",
+        isAnimating && (meal.completed ? "animate-pulse ring-2 ring-primary/50" : "animate-pulse ring-2 ring-muted-foreground/30")
+      )}
+    >
+      <button
+        onClick={handleClick}
+        disabled={isPending}
+        className={cn(
+          "w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300",
+          meal.completed 
+            ? "bg-primary text-primary-foreground" 
+            : "bg-coral-light text-primary hover:scale-105",
+          isAnimating && "scale-110"
+        )}
+      >
+        {meal.completed ? (
+          <Check className={cn(
+            "w-6 h-6 transition-all duration-300",
+            isAnimating ? "scale-110" : "scale-100"
+          )} />
+        ) : (
+          <Clock className="w-6 h-6" />
+        )}
+      </button>
+      
+      <div className="flex-1">
+        <div className="flex items-center gap-2">
+          <h4 className={cn(
+            "font-semibold transition-all duration-300",
+            meal.completed ? "text-muted-foreground line-through" : "text-foreground"
+          )}>
+            {meal.title}
+          </h4>
+        </div>
+        <span className={cn(
+          "text-sm transition-colors duration-300",
+          meal.completed ? "text-muted-foreground" : "text-muted-foreground"
+        )}>
+          {meal.calories} kcal
+        </span>
+        <div className="flex flex-wrap gap-1 mt-1">
+          {meal.items.slice(0, 3).map((item, i) => (
+            <span key={i} className="text-xs text-muted-foreground">
+              {item}{i < Math.min(meal.items.length, 3) - 1 && ","}
+            </span>
+          ))}
+          {meal.items.length > 3 && (
+            <span className="text-xs text-muted-foreground">+{meal.items.length - 3}</span>
+          )}
+        </div>
+      </div>
+      
+      <ChevronRight className="w-5 h-5 text-muted-foreground" />
+    </div>
+  );
+};
 
 interface WeekDay {
   day: number;
@@ -226,56 +313,12 @@ const Diet: React.FC = () => {
         ) : (
           <div className="space-y-3">
             {meals.map((meal) => (
-              <div
+              <AnimatedMealCard
                 key={meal.id}
-                className={cn(
-                  "bg-card rounded-2xl p-4 shadow-card border border-border flex items-center gap-4 transition-opacity",
-                  meal.completed && "opacity-60"
-                )}
-              >
-                <button
-                  onClick={() => toggleMealComplete(meal.id)}
-                  disabled={toggleMutation.isPending}
-                  className={cn(
-                    "w-12 h-12 rounded-xl flex items-center justify-center transition-all",
-                    meal.completed 
-                      ? "bg-primary text-primary-foreground" 
-                      : "bg-coral-light text-primary"
-                  )}
-                >
-                  {meal.completed ? (
-                    <Check className="w-6 h-6" />
-                  ) : (
-                    <Clock className="w-6 h-6" />
-                  )}
-                </button>
-                
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <h4 className={cn(
-                      "font-semibold",
-                      meal.completed ? "text-muted-foreground line-through" : "text-foreground"
-                    )}>
-                      {meal.title}
-                    </h4>
-                  </div>
-                  <span className="text-sm text-muted-foreground">
-                    {meal.time || "--:--"} · {meal.calories} kcal
-                  </span>
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    {meal.items.slice(0, 3).map((item, i) => (
-                      <span key={i} className="text-xs text-muted-foreground">
-                        {item}{i < Math.min(meal.items.length, 3) - 1 && ","}
-                      </span>
-                    ))}
-                    {meal.items.length > 3 && (
-                      <span className="text-xs text-muted-foreground">+{meal.items.length - 3}</span>
-                    )}
-                  </div>
-                </div>
-                
-                <ChevronRight className="w-5 h-5 text-muted-foreground" />
-              </div>
+                meal={meal}
+                onToggle={() => toggleMealComplete(meal.id)}
+                isPending={toggleMutation.isPending}
+              />
             ))}
           </div>
         )}
