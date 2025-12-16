@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Flame, ChevronRight, ChevronDown, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -28,22 +28,26 @@ export const MealCard: React.FC<MealCardProps> = ({
   onComplete
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isCompleted, setIsCompleted] = useState(completed);
   const [isAnimating, setIsAnimating] = useState(false);
+  const prevCompletedRef = useRef(completed);
+
+  // Detect external changes (from React Query) and trigger animation
+  useEffect(() => {
+    if (prevCompletedRef.current !== completed) {
+      setIsAnimating(true);
+      const timer = setTimeout(() => setIsAnimating(false), 400);
+      prevCompletedRef.current = completed;
+      return () => clearTimeout(timer);
+    }
+  }, [completed]);
 
   const handleComplete = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (locked) return;
     
     setIsAnimating(true);
-    setIsCompleted(!isCompleted);
-    
-    setTimeout(() => {
-      setIsAnimating(false);
-      if (!isCompleted && onComplete) {
-        onComplete();
-      }
-    }, 300);
+    setTimeout(() => setIsAnimating(false), 400);
+    onComplete?.();
   };
 
   const handleExpand = () => {
@@ -54,9 +58,10 @@ export const MealCard: React.FC<MealCardProps> = ({
   return (
     <div 
       className={cn(
-        "relative w-full bg-card rounded-2xl shadow-card transition-all duration-300 overflow-hidden",
+        "relative w-full bg-card rounded-2xl shadow-card overflow-hidden transition-all duration-300",
         locked && "blur-[2px] opacity-60",
-        isCompleted && "opacity-60 bg-muted"
+        completed && "opacity-70 bg-muted/50",
+        isAnimating && (completed ? "animate-pulse ring-2 ring-primary/50" : "animate-pulse ring-2 ring-muted-foreground/30")
       )}
     >
       {/* Lock overlay */}
@@ -79,31 +84,32 @@ export const MealCard: React.FC<MealCardProps> = ({
           disabled={locked}
           className={cn(
             "flex-shrink-0 w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all duration-300",
-            isCompleted 
-              ? "bg-primary border-primary" 
-              : "border-border hover:border-primary",
-            isAnimating && "scale-125",
+            completed 
+              ? "bg-primary border-primary scale-100" 
+              : "border-border hover:border-primary hover:scale-105",
+            isAnimating && "scale-110",
             locked && "pointer-events-none"
           )}
         >
-          {isCompleted && (
-            <Check 
-              className={cn(
-                "w-4 h-4 text-primary-foreground transition-transform duration-300",
-                isAnimating && "scale-110"
-              )} 
-            />
-          )}
+          <Check 
+            className={cn(
+              "w-4 h-4 text-primary-foreground transition-all duration-300",
+              completed ? "opacity-100 scale-100" : "opacity-0 scale-0"
+            )} 
+          />
         </button>
 
         <div className="flex-1 min-w-0">
           <h3 className={cn(
-            "font-semibold text-foreground transition-all",
-            isCompleted && "line-through text-muted-foreground"
+            "font-semibold transition-all duration-300",
+            completed ? "line-through text-muted-foreground" : "text-foreground"
           )}>
             Refeição {index}
           </h3>
-          <div className="flex items-center gap-1 mt-1 text-primary">
+          <div className={cn(
+            "flex items-center gap-1 mt-1 transition-colors duration-300",
+            completed ? "text-muted-foreground" : "text-primary"
+          )}>
             <Flame className="w-4 h-4" />
             <span className="text-sm font-medium">{calories} kcal</span>
           </div>
@@ -113,21 +119,25 @@ export const MealCard: React.FC<MealCardProps> = ({
           onClick={handleExpand}
           disabled={locked}
           className={cn(
-            "p-2 rounded-full hover:bg-muted transition-colors",
+            "p-2 rounded-full hover:bg-muted transition-all duration-200",
             locked && "pointer-events-none"
           )}
         >
-          {isExpanded ? (
-            <ChevronDown className="w-5 h-5 text-muted-foreground" />
-          ) : (
+          <div className={cn(
+            "transition-transform duration-200",
+            isExpanded && "rotate-90"
+          )}>
             <ChevronRight className="w-5 h-5 text-muted-foreground" />
-          )}
+          </div>
         </button>
       </div>
 
-      {/* Expanded content */}
-      {isExpanded && (
-        <div className="px-4 pb-4 pt-0 border-t border-border mt-0">
+      {/* Expanded content with animation */}
+      <div className={cn(
+        "overflow-hidden transition-all duration-300 ease-out",
+        isExpanded ? "max-h-48 opacity-100" : "max-h-0 opacity-0"
+      )}>
+        <div className="px-4 pb-4 pt-0 border-t border-border">
           <div className="pt-3">
             <p className="text-sm font-medium text-foreground mb-2">{title}</p>
             <p className="text-sm text-muted-foreground mb-3">
@@ -157,7 +167,7 @@ export const MealCard: React.FC<MealCardProps> = ({
             </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };
