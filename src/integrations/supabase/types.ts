@@ -97,6 +97,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          active_days_count: number | null
           activity_level: string | null
           age: number | null
           avatar_url: string | null
@@ -110,6 +111,7 @@ export type Database = {
           goal: string | null
           height: number | null
           id: string
+          last_active_date: string | null
           last_name: string | null
           nutrition_plan: Json | null
           obstacles: string[] | null
@@ -126,6 +128,7 @@ export type Database = {
           workout_plan: Json | null
         }
         Insert: {
+          active_days_count?: number | null
           activity_level?: string | null
           age?: number | null
           avatar_url?: string | null
@@ -139,6 +142,7 @@ export type Database = {
           goal?: string | null
           height?: number | null
           id?: string
+          last_active_date?: string | null
           last_name?: string | null
           nutrition_plan?: Json | null
           obstacles?: string[] | null
@@ -155,6 +159,7 @@ export type Database = {
           workout_plan?: Json | null
         }
         Update: {
+          active_days_count?: number | null
           activity_level?: string | null
           age?: number | null
           avatar_url?: string | null
@@ -168,6 +173,7 @@ export type Database = {
           goal?: string | null
           height?: number | null
           id?: string
+          last_active_date?: string | null
           last_name?: string | null
           nutrition_plan?: Json | null
           obstacles?: string[] | null
