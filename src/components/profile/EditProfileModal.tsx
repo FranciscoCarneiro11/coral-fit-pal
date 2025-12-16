@@ -278,10 +278,10 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
                   <SelectValue placeholder="Selecione" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="lose_weight">Perder Peso</SelectItem>
-                  <SelectItem value="gain_muscle">Ganhar Músculo</SelectItem>
-                  <SelectItem value="maintain">Manter</SelectItem>
-                  <SelectItem value="improve_health">Melhorar Saúde</SelectItem>
+                  <SelectItem value="weight-loss">Perder Peso</SelectItem>
+                  <SelectItem value="muscle">Ganhar Músculo</SelectItem>
+                  <SelectItem value="fit">Manter Forma</SelectItem>
+                  <SelectItem value="flexibility">Flexibilidade</SelectItem>
                 </SelectContent>
               </Select>
             </div>
