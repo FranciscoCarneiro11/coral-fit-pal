@@ -27,7 +27,7 @@ const NavItem: React.FC<NavItemProps> = ({ to, icon, label, isActive }) => {
       )}>
         {icon}
       </div>
-      <span className="text-[10px] font-medium uppercase tracking-wide">{label}</span>
+      <span className="text-[10px] font-display font-semibold uppercase tracking-wider">{label}</span>
       
       {/* Active indicator dot */}
       <div className={cn(
@@ -81,7 +81,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             <div className="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center border border-white/20 hover:bg-white/15 transition-colors">
               <Camera className="w-5 h-5 text-white" />
             </div>
-            <span className="text-[10px] font-medium uppercase tracking-wide">Scan</span>
+            <span className="text-[10px] font-display font-semibold uppercase tracking-wider">Scan</span>
           </button>
 
           {/* Treino */}
