@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Flame, Beef, Wheat, Droplet, Plus, Sparkles } from "lucide-react";
+import { Flame, Beef, Wheat, Droplet, Sparkles } from "lucide-react";
 import { AppShell, AppHeader, AppContent } from "@/components/layout/AppShell";
 import { HydrationTracker } from "@/components/dashboard/HydrationTracker";
-import { MealCard } from "@/components/dashboard/MealCard";
-import { DaySection } from "@/components/dashboard/DaySection";
+import { NextMealCard } from "@/components/dashboard/NextMealCard";
+import { TodayWorkoutCard } from "@/components/dashboard/TodayWorkoutCard";
+import { WeightProgressChart } from "@/components/dashboard/WeightProgressChart";
 import { BottomNavigation } from "@/components/navigation/BottomNavigation";
 import { AddMealModal, MealPrefillData } from "@/components/dashboard/AddMealModal";
 import { FoodScannerModal } from "@/components/scanner/FoodScannerModal";
@@ -75,6 +76,7 @@ interface UserProfile {
   height: number | null;
   weight: number | null;
   target_weight: number | null;
+  starting_weight: number | null;
   activity_level: string | null;
   goal: string | null;
   nutrition_plan: any;
@@ -118,6 +120,7 @@ const getActivityMultiplier = (level: string | null) => {
 
 const Dashboard: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { triggerConfetti } = useConfetti();
   const [hasTriggeredConfetti, setHasTriggeredConfetti] = useState(false);
@@ -140,7 +143,7 @@ const Dashboard: React.FC = () => {
 
       const { data, error } = await supabase
         .from("profiles")
-        .select("age, gender, height, weight, target_weight, activity_level, goal, nutrition_plan, workout_plan, current_streak, longest_streak, last_active_date")
+        .select("age, gender, height, weight, target_weight, starting_weight, activity_level, goal, nutrition_plan, workout_plan, current_streak, longest_streak, last_active_date")
         .eq("user_id", user.id)
         .maybeSingle();
 
@@ -373,6 +376,11 @@ const Dashboard: React.FC = () => {
   const consumedCarbs = completedMeals.reduce((sum, meal) => sum + meal.carbs, 0);
   const consumedFat = completedMeals.reduce((sum, meal) => sum + meal.fat, 0);
 
+  // Get next uncompleted meal
+  const nextMeal = useMemo(() => {
+    return todayMeals.find(meal => !meal.completed) || null;
+  }, [todayMeals]);
+
   const today = new Date().toLocaleDateString("pt-BR", {
     weekday: "long",
     day: "numeric",
@@ -467,65 +475,40 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Hydration Tracker */}
-        <HydrationTracker className="mb-8" />
+        <HydrationTracker className="mb-6" />
 
-        {/* Today's Meals */}
-        <DaySection title="Hoje">
-          <div className="flex items-center justify-between mb-4 -mt-2">
-            <span className="text-sm text-muted-foreground">Suas refeições</span>
-            <button 
-              className="text-primary text-sm font-medium flex items-center gap-1"
-              onClick={() => setIsAddMealOpen(true)}
-            >
-              <Plus className="w-4 h-4" />
-              Adicionar
-            </button>
-          </div>
-          {isLoading ? (
-            <div className="py-8 text-center text-muted-foreground">
-              Carregando...
-            </div>
-          ) : todayMeals.length === 0 ? (
-            <div className="py-8 text-center bg-muted/30 rounded-2xl space-y-4">
-              <p className="text-muted-foreground">Nenhuma refeição registada hoje</p>
-              <Button
-                onClick={handleGenerateMealPlan}
-                disabled={isGeneratingPlan}
-                className="gap-2"
-              >
-                <Sparkles className="w-4 h-4" />
-                {isGeneratingPlan ? "Gerando plano..." : "Gerar Plano com IA"}
-              </Button>
-            </div>
-          ) : (
-            todayMeals.map((meal, index) => (
-              <MealCard
-                key={meal.id}
-                title={meal.title}
-                index={index + 1}
-                calories={meal.calories}
-                items={meal.items}
-                protein={meal.protein ? Number(meal.protein) : undefined}
-                carbs={meal.carbs ? Number(meal.carbs) : undefined}
-                fat={meal.fat ? Number(meal.fat) : undefined}
-                completed={meal.completed || false}
-                onComplete={() => handleMealComplete(meal.id)}
-              />
-            ))
-          )}
-        </DaySection>
+        {/* Two-column grid on desktop */}
+        <div className="grid gap-6 md:grid-cols-2">
+          {/* Next Meal Card */}
+          <NextMealCard
+            meal={nextMeal}
+            onComplete={nextMeal ? () => handleMealComplete(nextMeal.id) : undefined}
+            onViewAll={() => navigate("/diet")}
+          />
 
-        {/* AI Generate Button (when meals exist) */}
-        {!isLoading && todayMeals.length > 0 && (
-          <div className="mt-6">
+          {/* Today's Workout Card */}
+          <TodayWorkoutCard workoutPlan={profile?.workout_plan} />
+        </div>
+
+        {/* Weight Progress Chart */}
+        <WeightProgressChart
+          currentWeight={profile?.weight || null}
+          targetWeight={profile?.target_weight || null}
+          startingWeight={profile?.starting_weight || null}
+          className="mt-6"
+        />
+
+        {/* Generate Plan CTA if no meals */}
+        {!isLoading && todayMeals.length === 0 && (
+          <div className="mt-6 py-6 text-center bg-muted/30 rounded-2xl">
+            <p className="text-muted-foreground mb-4">Nenhuma refeição registada hoje</p>
             <Button
-              variant="outline"
               onClick={handleGenerateMealPlan}
               disabled={isGeneratingPlan}
-              className="w-full gap-2"
+              className="gap-2"
             >
               <Sparkles className="w-4 h-4" />
-              {isGeneratingPlan ? "Gerando novo plano..." : "Regenerar Plano Semanal"}
+              {isGeneratingPlan ? "Gerando plano..." : "Gerar Plano com IA"}
             </Button>
           </div>
         )}
