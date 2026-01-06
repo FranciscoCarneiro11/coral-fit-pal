@@ -101,9 +101,9 @@ export const BodyZoneSelector: React.FC<BodyZoneSelectorProps> = ({
   const figureImage = isMale ? maleFigure : femaleFigure;
 
   return (
-    <div className={cn("flex flex-col items-center gap-6", className)}>
+    <div className={cn("flex items-center gap-4", className)}>
       {/* Body Figure with Heatmap Overlays */}
-      <div className="relative w-full max-w-[280px] mx-auto">
+      <div className="relative flex-shrink-0 w-[45%]">
         {/* Background Glow Effect */}
         <div 
           className={cn(
@@ -112,7 +112,7 @@ export const BodyZoneSelector: React.FC<BodyZoneSelectorProps> = ({
           )}
           style={{
             background: "radial-gradient(ellipse at center, hsl(var(--primary) / 0.15) 0%, transparent 70%)",
-            filter: "blur(30px)",
+            filter: "blur(20px)",
             transform: "scale(1.1)",
           }}
         />
@@ -123,10 +123,10 @@ export const BodyZoneSelector: React.FC<BodyZoneSelectorProps> = ({
           <img
             src={figureImage}
             alt={`${gender} body figure`}
-            className="w-full h-full object-contain relative z-10 drop-shadow-lg"
+            className="w-full h-full object-contain relative z-10"
             style={{
               filter: selected.length > 0 
-                ? "drop-shadow(0 0 20px hsl(var(--primary) / 0.3))" 
+                ? "drop-shadow(0 0 15px hsl(var(--primary) / 0.3))" 
                 : "drop-shadow(0 4px 12px rgba(0,0,0,0.1))",
             }}
           />
@@ -155,7 +155,7 @@ export const BodyZoneSelector: React.FC<BodyZoneSelectorProps> = ({
                       hsl(var(--primary) / 0.5) 30%, 
                       hsl(var(--primary) / 0.2) 60%, 
                       transparent 100%)`,
-                    filter: "blur(8px)",
+                    filter: "blur(6px)",
                   }}
                 />
                 {/* Inner intense glow */}
@@ -166,7 +166,7 @@ export const BodyZoneSelector: React.FC<BodyZoneSelectorProps> = ({
                       hsl(var(--primary) / 0.9) 0%, 
                       hsl(var(--primary) / 0.4) 70%, 
                       transparent 100%)`,
-                    filter: "blur(4px)",
+                    filter: "blur(3px)",
                     animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
                   }}
                 />
@@ -183,7 +183,7 @@ export const BodyZoneSelector: React.FC<BodyZoneSelectorProps> = ({
                   hsl(var(--primary) / 0.25) 20%, 
                   hsl(var(--primary) / 0.1) 50%, 
                   transparent 80%)`,
-                filter: "blur(15px)",
+                filter: "blur(12px)",
                 animation: "pulse 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite",
               }}
             />
@@ -191,8 +191,8 @@ export const BodyZoneSelector: React.FC<BodyZoneSelectorProps> = ({
         </div>
       </div>
 
-      {/* Selection Buttons - Horizontal Pills */}
-      <div className="w-full flex flex-wrap justify-center gap-2 mt-2">
+      {/* Selection Buttons - Vertical Stack */}
+      <div className="flex-1 flex flex-col gap-2.5">
         {bodyZones.map((zone) => {
           const isSelected = selected.includes(zone.id);
           return (
@@ -200,15 +200,15 @@ export const BodyZoneSelector: React.FC<BodyZoneSelectorProps> = ({
               key={zone.id}
               onClick={() => toggleZone(zone.id)}
               className={cn(
-                "relative flex items-center gap-2 px-4 py-2.5 rounded-full transition-all duration-300",
+                "relative flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300",
                 "text-sm font-medium",
                 isSelected
-                  ? "bg-primary text-primary-foreground shadow-lg"
+                  ? "bg-primary text-primary-foreground shadow-md"
                   : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
               )}
               style={{
                 boxShadow: isSelected 
-                  ? "0 4px 20px hsl(var(--primary) / 0.4)" 
+                  ? "0 4px 16px hsl(var(--primary) / 0.35)" 
                   : undefined,
               }}
             >
@@ -227,13 +227,6 @@ export const BodyZoneSelector: React.FC<BodyZoneSelectorProps> = ({
           );
         })}
       </div>
-
-      {/* Selection Counter */}
-      {selected.length > 0 && (
-        <p className="text-sm text-muted-foreground text-center animate-fade-in">
-          {selected.length} {selected.length === 1 ? "área selecionada" : "áreas selecionadas"}
-        </p>
-      )}
     </div>
   );
 };
