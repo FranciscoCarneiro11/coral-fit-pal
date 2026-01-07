@@ -1,7 +1,7 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Play, Bookmark, HelpCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 // Imagens customizadas de grupos musculares
@@ -160,12 +160,10 @@ const BodySilhouette: React.FC<{ zone: string; isSelected: boolean }> = ({ zone,
 
 const ExerciseGallery: React.FC = () => {
   const [selectedMuscle, setSelectedMuscle] = useState<string>("todos");
-  const [selectedExercise, setSelectedExercise] = useState<GalleryExercise | null>(null);
-  const [videoModalOpen, setVideoModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleExerciseClick = (exercise: GalleryExercise) => {
-    setSelectedExercise(exercise);
-    setVideoModalOpen(true);
+    navigate(`/exercise/${exercise.id}`);
   };
 
   const exercises = exercisesByMuscle[selectedMuscle] || [];
@@ -298,42 +296,6 @@ const ExerciseGallery: React.FC = () => {
         ))}
       </div>
 
-      {/* Video Modal */}
-      <Dialog open={videoModalOpen} onOpenChange={setVideoModalOpen}>
-        <DialogContent className="max-w-lg p-0 overflow-hidden bg-background">
-          <div className="p-4 border-b border-border">
-            <h3 className="font-semibold text-foreground">
-              {selectedExercise?.name}
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              {selectedExercise?.muscleGroup}
-            </p>
-          </div>
-          
-          <div className="aspect-video bg-muted flex items-center justify-center">
-            {selectedExercise?.videoUrl ? (
-              <video
-                src={selectedExercise.videoUrl}
-                controls
-                autoPlay
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="text-center p-8">
-                <div className="w-16 h-16 rounded-full bg-muted-foreground/20 flex items-center justify-center mx-auto mb-4">
-                  <Play className="w-8 h-8 text-muted-foreground" />
-                </div>
-                <p className="text-muted-foreground font-medium">
-                  Vídeo em breve
-                </p>
-                <p className="text-sm text-muted-foreground/70 mt-1">
-                  O vídeo demonstrativo deste exercício será adicionado em breve.
-                </p>
-              </div>
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
