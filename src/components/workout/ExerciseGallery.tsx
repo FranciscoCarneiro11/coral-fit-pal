@@ -9,6 +9,7 @@ import peitoImg from "@/assets/muscle-groups/peito.png";
 import costasImg from "@/assets/muscle-groups/costas.png";
 import tricepsImg from "@/assets/muscle-groups/triceps.png";
 import bicepsImg from "@/assets/muscle-groups/biceps.png";
+import abdomenImg from "@/assets/muscle-groups/abdomen.png";
 
 interface GalleryExercise {
   id: string;
@@ -90,7 +91,7 @@ const muscleGroups = [
   { id: "biceps", name: "Bíceps", highlightZone: "biceps", customImage: bicepsImg },
   { id: "triceps", name: "Tríceps", highlightZone: "triceps", customImage: tricepsImg },
   { id: "pernas", name: "Pernas", highlightZone: "legs", customImage: null },
-  { id: "abdomen", name: "Abdômen", highlightZone: "abs", customImage: null },
+  { id: "abdomen", name: "Abdômen", highlightZone: "abs", customImage: abdomenImg },
 ];
 
 // Componente de silhueta do corpo com destaque na zona selecionada
