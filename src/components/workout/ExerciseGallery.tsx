@@ -194,10 +194,7 @@ const ExerciseGallery: React.FC = () => {
                   <img 
                     src={muscle.customImage} 
                     alt={muscle.name}
-                    className={cn(
-                      "object-contain",
-                      muscle.id === "todos" ? "w-10 h-full" : "w-full h-full"
-                    )}
+                    className="w-full h-full object-contain"
                   />
                 ) : (
                   <BodySilhouette 
