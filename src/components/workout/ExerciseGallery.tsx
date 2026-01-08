@@ -52,11 +52,12 @@ const exercisesByMuscle: Record<string, GalleryExercise[]> = {
     { id: "shoulder-5", name: "Encolhimento", muscleGroup: "Ombros" },
   ],
   biceps: [
-    { id: "biceps-1", name: "Rosca Direta", muscleGroup: "Bíceps" },
-    { id: "biceps-2", name: "Rosca Alternada", muscleGroup: "Bíceps" },
-    { id: "biceps-3", name: "Rosca Martelo", muscleGroup: "Bíceps" },
-    { id: "biceps-4", name: "Rosca Concentrada", muscleGroup: "Bíceps" },
-    { id: "biceps-5", name: "Rosca Scott", muscleGroup: "Bíceps" },
+    { id: "biceps-1", name: "Biceps Curl", muscleGroup: "Bíceps", videoUrl: "/videos/biceps_cabo.mp4" },
+    { id: "biceps-2", name: "Rosca Direta", muscleGroup: "Bíceps" },
+    { id: "biceps-3", name: "Rosca Alternada", muscleGroup: "Bíceps" },
+    { id: "biceps-4", name: "Rosca Martelo", muscleGroup: "Bíceps" },
+    { id: "biceps-5", name: "Rosca Concentrada", muscleGroup: "Bíceps" },
+    { id: "biceps-6", name: "Rosca Scott", muscleGroup: "Bíceps" },
   ],
   triceps: [
     { id: "triceps-1", name: "Tríceps Pulley", muscleGroup: "Tríceps" },
