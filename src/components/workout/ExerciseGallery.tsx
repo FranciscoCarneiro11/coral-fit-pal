@@ -60,11 +60,12 @@ const exercisesByMuscle: Record<string, GalleryExercise[]> = {
     { id: "biceps-6", name: "Rosca Scott", muscleGroup: "Bíceps" },
   ],
   triceps: [
-    { id: "triceps-1", name: "Tríceps Pulley", muscleGroup: "Tríceps" },
-    { id: "triceps-2", name: "Tríceps Testa", muscleGroup: "Tríceps" },
-    { id: "triceps-3", name: "Tríceps Francês", muscleGroup: "Tríceps" },
-    { id: "triceps-4", name: "Mergulho", muscleGroup: "Tríceps" },
-    { id: "triceps-5", name: "Kickback", muscleGroup: "Tríceps" },
+    { id: "triceps-1", name: "Triceps Pushdown", muscleGroup: "Tríceps", videoUrl: "/videos/triceps_triangulo.mp4" },
+    { id: "triceps-2", name: "Tríceps Pulley", muscleGroup: "Tríceps" },
+    { id: "triceps-3", name: "Tríceps Testa", muscleGroup: "Tríceps" },
+    { id: "triceps-4", name: "Tríceps Francês", muscleGroup: "Tríceps" },
+    { id: "triceps-5", name: "Mergulho", muscleGroup: "Tríceps" },
+    { id: "triceps-6", name: "Kickback", muscleGroup: "Tríceps" },
   ],
   quadriceps: [
     { id: "quad-1", name: "Agachamento", muscleGroup: "Quadríceps" },
