@@ -28,7 +28,7 @@ interface GalleryExercise {
 const exercisesByMuscle: Record<string, GalleryExercise[]> = {
   todos: [],
   peito: [
-    { id: "chest-1", name: "Supino Reto", muscleGroup: "Peito", videoUrl: "/videos/supino_reto.mp4" },
+    { id: "chest-1", name: "Bench Press", muscleGroup: "Peito", videoUrl: "/videos/supino_reto.mp4" },
     { id: "chest-2", name: "Dumbbell Incline Bench Press", muscleGroup: "Peito", videoUrl: "/videos/supino_inclinado_com_halter.mp4" },
     { id: "chest-3", name: "Supino Inclinado", muscleGroup: "Peito" },
     { id: "chest-4", name: "Crucifixo", muscleGroup: "Peito" },
