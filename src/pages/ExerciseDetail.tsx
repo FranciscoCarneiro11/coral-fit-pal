@@ -5,50 +5,71 @@ import { Button } from "@/components/ui/button";
 
 // Dados dos exercícios (mesma estrutura da galeria)
 const allExercises: Record<string, { name: string; muscleGroup: string; videoUrl?: string; description?: string }> = {
-  "chest-1": { name: "Supino Reto", muscleGroup: "Peito", videoUrl: "/videos/supino_reto.mp4", description: "O supino reto é um exercício fundamental para desenvolvimento do peitoral. Deite-se no banco, segure a barra com pegada média, desça até o peito e empurre para cima." },
-  "chest-2": { name: "Supino Inclinado", muscleGroup: "Peito", description: "Focado na parte superior do peitoral, realizado em banco inclinado a 30-45 graus." },
-  "chest-3": { name: "Crucifixo", muscleGroup: "Peito", description: "Exercício de isolamento para o peitoral, realizado com halteres em movimento de abertura." },
-  "chest-4": { name: "Flexão de Braço", muscleGroup: "Peito", description: "Exercício clássico utilizando o peso do corpo para trabalhar peitoral, ombros e tríceps." },
-  "chest-5": { name: "Crossover", muscleGroup: "Peito", description: "Exercício realizado em polia cruzada para isolamento do peitoral." },
-  "chest-6": { name: "Fly na Máquina", muscleGroup: "Peito", description: "Movimento de abertura na máquina para isolamento do peitoral." },
-  "back-1": { name: "Puxada Frontal", muscleGroup: "Costas", description: "Exercício para dorsais, puxando a barra em direção ao peito." },
-  "back-2": { name: "Remada Curvada", muscleGroup: "Costas", description: "Exercício composto para espessura das costas." },
-  "back-3": { name: "Remada Baixa", muscleGroup: "Costas", description: "Exercício para região média das costas na polia baixa." },
-  "back-4": { name: "Pull Down", muscleGroup: "Costas", description: "Variação da puxada para trabalhar os dorsais." },
+  // Peito
+  "chest-1": { name: "Bench Press", muscleGroup: "Peito", videoUrl: "/videos/supino_reto.mp4", description: "O supino reto é um exercício fundamental para desenvolvimento do peitoral. Deite-se no banco, segure a barra com pegada média, desça até o peito e empurre para cima." },
+  "chest-2": { name: "Dumbbell Incline Bench Press", muscleGroup: "Peito", videoUrl: "/videos/supino_inclinado_com_halter.mp4", description: "Focado na parte superior do peitoral, realizado em banco inclinado a 30-45 graus com halteres." },
+  "chest-3": { name: "Supino Inclinado", muscleGroup: "Peito", description: "Focado na parte superior do peitoral, realizado em banco inclinado a 30-45 graus." },
+  "chest-4": { name: "Crucifixo", muscleGroup: "Peito", description: "Exercício de isolamento para o peitoral, realizado com halteres em movimento de abertura." },
+  "chest-5": { name: "Flexão de Braço", muscleGroup: "Peito", description: "Exercício clássico utilizando o peso do corpo para trabalhar peitoral, ombros e tríceps." },
+  "chest-6": { name: "Crossover", muscleGroup: "Peito", description: "Exercício realizado em polia cruzada para isolamento do peitoral." },
+  "chest-7": { name: "Fly na Máquina", muscleGroup: "Peito", description: "Movimento de abertura na máquina para isolamento do peitoral." },
+  
+  // Costas
+  "back-1": { name: "Pulldown", muscleGroup: "Costas", videoUrl: "/videos/pulldown.mp4", description: "Exercício para dorsais, puxando a barra em direção ao peito." },
+  "back-2": { name: "Seated Wide-grip Row", muscleGroup: "Costas", videoUrl: "/videos/remada_aberta_sentado.mp4", description: "Remada sentada com pegada aberta para trabalhar as costas." },
+  "back-3": { name: "Puxada Frontal", muscleGroup: "Costas", description: "Exercício para dorsais, puxando a barra em direção ao peito." },
+  "back-4": { name: "Remada Curvada", muscleGroup: "Costas", description: "Exercício composto para espessura das costas." },
   "back-5": { name: "Barra Fixa", muscleGroup: "Costas", description: "Exercício clássico para dorsais utilizando o peso corporal." },
   "back-6": { name: "Remada Unilateral", muscleGroup: "Costas", description: "Remada com halter para trabalho unilateral das costas." },
-  "shoulder-1": { name: "Desenvolvimento", muscleGroup: "Ombros", description: "Exercício principal para deltoides, empurrando peso acima da cabeça." },
-  "shoulder-2": { name: "Elevação Lateral", muscleGroup: "Ombros", description: "Isolamento para deltoides laterais." },
-  "shoulder-3": { name: "Elevação Frontal", muscleGroup: "Ombros", description: "Isolamento para deltoides anteriores." },
-  "shoulder-4": { name: "Crucifixo Inverso", muscleGroup: "Ombros", description: "Exercício para deltoides posteriores." },
-  "shoulder-5": { name: "Encolhimento", muscleGroup: "Ombros", description: "Exercício para trapézio superior." },
-  "biceps-1": { name: "Rosca Direta", muscleGroup: "Bíceps", description: "Exercício principal para bíceps com barra." },
-  "biceps-2": { name: "Rosca Alternada", muscleGroup: "Bíceps", description: "Rosca com halteres alternando os braços." },
-  "biceps-3": { name: "Rosca Martelo", muscleGroup: "Bíceps", description: "Variação que trabalha bíceps e braquial." },
-  "biceps-4": { name: "Rosca Concentrada", muscleGroup: "Bíceps", description: "Exercício de isolamento para pico do bíceps." },
-  "biceps-5": { name: "Rosca Scott", muscleGroup: "Bíceps", description: "Rosca no banco Scott para máximo isolamento." },
-  "triceps-1": { name: "Tríceps Pulley", muscleGroup: "Tríceps", description: "Exercício na polia para isolamento do tríceps." },
-  "triceps-2": { name: "Tríceps Testa", muscleGroup: "Tríceps", description: "Extensão de tríceps deitado com barra." },
-  "triceps-3": { name: "Tríceps Francês", muscleGroup: "Tríceps", description: "Extensão de tríceps acima da cabeça." },
-  "triceps-4": { name: "Mergulho", muscleGroup: "Tríceps", description: "Exercício composto para tríceps e peitoral." },
-  "triceps-5": { name: "Kickback", muscleGroup: "Tríceps", description: "Extensão de tríceps unilateral com halter." },
-  "quad-1": { name: "Agachamento", muscleGroup: "Quadríceps", description: "Rei dos exercícios para pernas." },
-  "quad-2": { name: "Leg Press", muscleGroup: "Quadríceps", description: "Exercício na máquina para quadríceps." },
-  "quad-3": { name: "Extensora", muscleGroup: "Quadríceps", description: "Isolamento para quadríceps na máquina." },
+  
+  // Ombros
+  "shoulder-1": { name: "Lateral Raise", muscleGroup: "Ombros", videoUrl: "/videos/elevacao_lateral.mp4", description: "Isolamento para deltoides laterais com halteres." },
+  "shoulder-2": { name: "Seated Shoulder Press", muscleGroup: "Ombros", videoUrl: "/videos/shoulderpress.mp4", description: "Exercício principal para deltoides, empurrando peso acima da cabeça." },
+  "shoulder-3": { name: "Desenvolvimento", muscleGroup: "Ombros", description: "Exercício principal para deltoides, empurrando peso acima da cabeça." },
+  "shoulder-4": { name: "Elevação Frontal", muscleGroup: "Ombros", description: "Isolamento para deltoides anteriores." },
+  "shoulder-5": { name: "Crucifixo Inverso", muscleGroup: "Ombros", description: "Exercício para deltoides posteriores." },
+  "shoulder-6": { name: "Encolhimento", muscleGroup: "Ombros", description: "Exercício para trapézio superior." },
+  
+  // Bíceps
+  "biceps-1": { name: "Biceps Curl", muscleGroup: "Bíceps", videoUrl: "/videos/biceps_cabo.mp4", description: "Exercício principal para bíceps no cabo." },
+  "biceps-2": { name: "Hammer Curl", muscleGroup: "Bíceps", videoUrl: "/videos/biceps_martelo.mp4", description: "Variação que trabalha bíceps e braquial com pegada neutra." },
+  "biceps-3": { name: "Rosca Direta", muscleGroup: "Bíceps", description: "Exercício principal para bíceps com barra." },
+  "biceps-4": { name: "Rosca Alternada", muscleGroup: "Bíceps", description: "Rosca com halteres alternando os braços." },
+  "biceps-5": { name: "Rosca Concentrada", muscleGroup: "Bíceps", description: "Exercício de isolamento para pico do bíceps." },
+  "biceps-6": { name: "Rosca Scott", muscleGroup: "Bíceps", description: "Rosca no banco Scott para máximo isolamento." },
+  
+  // Tríceps
+  "triceps-1": { name: "Triceps Pushdown", muscleGroup: "Tríceps", videoUrl: "/videos/triceps_triangulo.mp4", description: "Exercício na polia para isolamento do tríceps." },
+  "triceps-2": { name: "Seated Bench Extension", muscleGroup: "Tríceps", videoUrl: "/videos/triceps_frances.mp4", description: "Extensão de tríceps sentado acima da cabeça." },
+  "triceps-3": { name: "Tríceps Pulley", muscleGroup: "Tríceps", description: "Exercício na polia para isolamento do tríceps." },
+  "triceps-4": { name: "Tríceps Testa", muscleGroup: "Tríceps", description: "Extensão de tríceps deitado com barra." },
+  "triceps-5": { name: "Mergulho", muscleGroup: "Tríceps", description: "Exercício composto para tríceps e peitoral." },
+  "triceps-6": { name: "Kickback", muscleGroup: "Tríceps", description: "Extensão de tríceps unilateral com halter." },
+  
+  // Quadríceps
+  "quad-1": { name: "Lever Leg Extension", muscleGroup: "Quadríceps", videoUrl: "/videos/cadeira_extensora.mp4", description: "Isolamento para quadríceps na máquina extensora." },
+  "quad-2": { name: "Agachamento", muscleGroup: "Quadríceps", description: "Rei dos exercícios para pernas." },
+  "quad-3": { name: "Leg Press", muscleGroup: "Quadríceps", description: "Exercício na máquina para quadríceps." },
   "quad-4": { name: "Agachamento Hack", muscleGroup: "Quadríceps", description: "Variação do agachamento na máquina hack." },
   "quad-5": { name: "Avanço", muscleGroup: "Quadríceps", description: "Exercício unilateral para pernas." },
   "quad-6": { name: "Agachamento Búlgaro", muscleGroup: "Quadríceps", description: "Agachamento unilateral com pé elevado." },
+  
+  // Abdômen
   "abs-1": { name: "Abdominal Crunch", muscleGroup: "Abdômen", description: "Exercício básico para abdominais." },
   "abs-2": { name: "Prancha", muscleGroup: "Abdômen", description: "Exercício isométrico para core." },
   "abs-3": { name: "Elevação de Pernas", muscleGroup: "Abdômen", description: "Exercício para abdômen inferior." },
   "abs-4": { name: "Abdominal Bicicleta", muscleGroup: "Abdômen", description: "Exercício para oblíquos e reto abdominal." },
   "abs-5": { name: "Prancha Lateral", muscleGroup: "Abdômen", description: "Exercício isométrico para oblíquos." },
+  
+  // Posterior
   "post-1": { name: "Stiff", muscleGroup: "Posterior", description: "Exercício para posterior de coxa e glúteos." },
   "post-2": { name: "Mesa Flexora", muscleGroup: "Posterior", description: "Isolamento para posterior de coxa." },
   "post-3": { name: "Flexora Deitado", muscleGroup: "Posterior", description: "Flexora na posição deitada." },
   "post-4": { name: "Levantamento Terra", muscleGroup: "Posterior", description: "Exercício composto para posterior." },
   "post-5": { name: "Good Morning", muscleGroup: "Posterior", description: "Exercício para posterior com barra." },
   "post-6": { name: "Cadeira Flexora", muscleGroup: "Posterior", description: "Flexora na posição sentada." },
+  
+  // Trapézio
   "trap-1": { name: "Encolhimento com Barra", muscleGroup: "Trapézio", description: "Exercício principal para trapézio." },
   "trap-2": { name: "Encolhimento com Halteres", muscleGroup: "Trapézio", description: "Variação com halteres." },
   "trap-3": { name: "Remada Alta", muscleGroup: "Trapézio", description: "Exercício para trapézio e deltoides." },
