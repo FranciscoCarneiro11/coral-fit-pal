@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bookmark, HelpCircle, Heart } from "lucide-react";
+import { Bookmark, HelpCircle, Heart, Dumbbell } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Imagens customizadas de grupos musculares
 import peitoImg from "@/assets/muscle-groups/peito.png";
@@ -24,6 +25,57 @@ interface GalleryExercise {
   videoUrl?: string;
   thumbnailUrl?: string;
 }
+
+// Placeholder component for when video fails to load
+const ExercisePlaceholder: React.FC<{ name: string }> = ({ name }) => (
+  <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-muted to-muted/50">
+    <Dumbbell className="w-10 h-10 text-muted-foreground/40 mb-2" />
+    <span className="text-xs text-muted-foreground/60 text-center px-2 line-clamp-2">
+      {name}
+    </span>
+  </div>
+);
+
+// Video thumbnail with loading state and error fallback
+const VideoThumbnail: React.FC<{ 
+  videoUrl: string; 
+  exerciseName: string;
+}> = ({ videoUrl, exerciseName }) => {
+  const [status, setStatus] = useState<'loading' | 'loaded' | 'error'>('loading');
+
+  const handleLoadedData = useCallback(() => {
+    setStatus('loaded');
+  }, []);
+
+  const handleError = useCallback(() => {
+    console.warn(`Failed to load video: ${videoUrl}`);
+    setStatus('error');
+  }, [videoUrl]);
+
+  if (status === 'error') {
+    return <ExercisePlaceholder name={exerciseName} />;
+  }
+
+  return (
+    <>
+      {status === 'loading' && (
+        <Skeleton className="absolute inset-0 w-full h-full" />
+      )}
+      <video
+        src={videoUrl}
+        className={cn(
+          "w-full h-full object-cover transition-opacity duration-300",
+          status === 'loading' ? 'opacity-0' : 'opacity-100'
+        )}
+        muted
+        playsInline
+        preload="metadata"
+        onLoadedData={handleLoadedData}
+        onError={handleError}
+      />
+    </>
+  );
+};
 
 // Dados estáticos de exercícios por grupo muscular
 const exercisesByMuscle: Record<string, GalleryExercise[]> = {
@@ -308,31 +360,14 @@ const ExerciseGallery: React.FC = () => {
                 <HelpCircle className="w-4 h-4 text-white" />
               </button>
 
-              {/* Video thumbnail or placeholder */}
+              {/* Video thumbnail or placeholder with loading state */}
               {exercise.videoUrl ? (
-                <video
-                  src={exercise.videoUrl}
-                  className="w-full h-full object-cover"
-                  muted
-                  playsInline
-                  preload="metadata"
+                <VideoThumbnail 
+                  videoUrl={exercise.videoUrl} 
+                  exerciseName={exercise.name} 
                 />
               ) : (
-                <div className="w-16 h-16 rounded-lg bg-muted-foreground/10 flex items-center justify-center">
-                  <svg viewBox="0 0 60 100" className="w-12 h-16 opacity-40">
-                    <ellipse cx="30" cy="12" rx="8" ry="10" fill="currentColor" />
-                    <rect x="27" y="22" width="6" height="6" fill="currentColor" />
-                    <path d="M18 28 L42 28 L44 55 L16 55 Z" fill="currentColor" />
-                    <ellipse cx="14" cy="32" rx="5" ry="4" fill="currentColor" />
-                    <ellipse cx="46" cy="32" rx="5" ry="4" fill="currentColor" />
-                    <path d="M9 36 L6 52 L10 52 L14 38 Z" fill="currentColor" />
-                    <path d="M6 52 L4 68 L9 68 L10 52 Z" fill="currentColor" />
-                    <path d="M51 36 L54 52 L50 52 L46 38 Z" fill="currentColor" />
-                    <path d="M54 52 L56 68 L51 68 L50 52 Z" fill="currentColor" />
-                    <path d="M16 55 L14 85 L22 85 L25 55 Z" fill="currentColor" />
-                    <path d="M44 55 L46 85 L38 85 L35 55 Z" fill="currentColor" />
-                  </svg>
-                </div>
+                <ExercisePlaceholder name={exercise.name} />
               )}
             </div>
             
