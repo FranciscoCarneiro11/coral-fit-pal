@@ -122,7 +122,7 @@ const exercisesByMuscle: Record<string, GalleryExercise[]> = {
     { id: "triceps-6", name: "Kickback", muscleGroup: "Tríceps" },
   ],
   quadriceps: [
-    { id: "quad-1", name: "Lever Leg Extension", muscleGroup: "Quadríceps", videoUrl: "/videos/cadeira_extensora.mp4" },
+    { id: "quad-1", name: "Lever Leg Extension", muscleGroup: "Quadríceps", videoUrl: "/videos/cadeira_extensora.mp4", thumbnailUrl: "/images/exercises/leg-extension.jpeg" },
     { id: "quad-2", name: "Agachamento", muscleGroup: "Quadríceps" },
     { id: "quad-3", name: "Leg Press", muscleGroup: "Quadríceps" },
     { id: "quad-4", name: "Agachamento Hack", muscleGroup: "Quadríceps" },
