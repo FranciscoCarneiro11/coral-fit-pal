@@ -99,20 +99,40 @@ Please generate a complete, practical plan in JSON format.`;
 
     console.log("Calling OpenAI gpt-4o-mini to generate plan for user:", user.id);
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt },
-      ],
-      response_format: { type: "json_object" },
-      max_tokens: 4000,
-    });
+    let response;
+    try {
+      response = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
+        ],
+        response_format: { type: "json_object" },
+        max_tokens: 4000,
+      });
+    } catch (openaiError: any) {
+      console.error("OpenAI API error:", openaiError);
+      const status = openaiError?.status || 500;
+      const message = openaiError?.message || "OpenAI API error";
+      const code = openaiError?.code || "unknown";
+      return new Response(
+        JSON.stringify({ 
+          error: `OpenAI Error (${status}): ${message}`,
+          code: code,
+          details: openaiError?.error?.message || message
+        }),
+        { status: status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     const planText = response.choices?.[0]?.message?.content;
     
     if (!planText) {
-      throw new Error("No plan generated from AI");
+      console.error("No content in OpenAI response");
+      return new Response(
+        JSON.stringify({ error: "No plan generated from AI - empty response" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
     console.log("AI response received, parsing plan...");
@@ -122,7 +142,10 @@ Please generate a complete, practical plan in JSON format.`;
       plan = JSON.parse(planText);
     } catch (e) {
       console.error("Failed to parse AI response as JSON:", planText);
-      throw new Error("Failed to parse generated plan");
+      return new Response(
+        JSON.stringify({ error: "Failed to parse generated plan", rawContent: planText.substring(0, 200) }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
     return new Response(
@@ -134,10 +157,13 @@ Please generate a complete, practical plan in JSON format.`;
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error in generate-plan function:", error);
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
+      JSON.stringify({ 
+        error: error instanceof Error ? error.message : "Unknown error",
+        stack: error?.stack?.substring(0, 300)
+      }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

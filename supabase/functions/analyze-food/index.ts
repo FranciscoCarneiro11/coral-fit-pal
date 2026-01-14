@@ -37,12 +37,14 @@ serve(async (req) => {
 
     console.log("Analyzing food image with OpenAI gpt-4o-mini...");
 
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [
-        {
-          role: 'system',
-          content: `You are a nutrition expert AI. Analyze food images and provide accurate nutritional estimates.
+    let response;
+    try {
+      response = await openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'system',
+            content: `You are a nutrition expert AI. Analyze food images and provide accurate nutritional estimates.
 Always respond with ONLY a valid JSON object in this exact format:
 {
   "title": "Name of the meal in Portuguese",
@@ -54,25 +56,39 @@ Always respond with ONLY a valid JSON object in this exact format:
   "items": ["ingredient 1 in Portuguese", "ingredient 2 in Portuguese", ...]
 }
 Do not include any text before or after the JSON. Only output the JSON object.`
-        },
-        {
-          role: 'user',
-          content: [
-            {
-              type: 'text',
-              text: 'Analyze this food image. Identify the meal name and estimate calories, protein, carbs, and fat. Determine if it\'s breakfast, lunch, dinner, or snack based on the food type.'
-            },
-            {
-              type: 'image_url',
-              image_url: {
-                url: imageBase64.startsWith('data:') ? imageBase64 : `data:image/jpeg;base64,${imageBase64}`
+          },
+          {
+            role: 'user',
+            content: [
+              {
+                type: 'text',
+                text: 'Analyze this food image. Identify the meal name and estimate calories, protein, carbs, and fat. Determine if it\'s breakfast, lunch, dinner, or snack based on the food type.'
+              },
+              {
+                type: 'image_url',
+                image_url: {
+                  url: imageBase64.startsWith('data:') ? imageBase64 : `data:image/jpeg;base64,${imageBase64}`
+                }
               }
-            }
-          ]
-        }
-      ],
-      max_tokens: 1000,
-    });
+            ]
+          }
+        ],
+        max_tokens: 1000,
+      });
+    } catch (openaiError: any) {
+      console.error("OpenAI API error:", openaiError);
+      const status = openaiError?.status || 500;
+      const message = openaiError?.message || "OpenAI API error";
+      const code = openaiError?.code || "unknown";
+      return new Response(
+        JSON.stringify({ 
+          error: `OpenAI Error (${status}): ${message}`,
+          code: code,
+          details: openaiError?.error?.message || message
+        }),
+        { status: status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     const content = response.choices?.[0]?.message?.content;
 
@@ -99,7 +115,7 @@ Do not include any text before or after the JSON. Only output the JSON object.`
     } catch (parseError) {
       console.error("Failed to parse AI response:", parseError);
       return new Response(
-        JSON.stringify({ error: "Failed to parse AI response", rawContent: content }),
+        JSON.stringify({ error: "Failed to parse AI response", rawContent: content.substring(0, 200) }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -111,11 +127,13 @@ Do not include any text before or after the JSON. Only output the JSON object.`
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error in analyze-food function:", error);
-    const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
     return new Response(
-      JSON.stringify({ error: errorMessage }),
+      JSON.stringify({ 
+        error: error instanceof Error ? error.message : "An unexpected error occurred",
+        stack: error?.stack?.substring(0, 300)
+      }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
