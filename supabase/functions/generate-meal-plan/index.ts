@@ -132,21 +132,37 @@ Varie os pratos entre os dias. Use ingredientes comuns no Brasil.`;
 
     console.log("Calling OpenAI gpt-4o-mini for meal plan generation...");
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt },
-      ],
-      max_tokens: 4000,
-    });
+    let response;
+    try {
+      response = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
+        ],
+        max_tokens: 4000,
+      });
+    } catch (openaiError: any) {
+      console.error("OpenAI API error:", openaiError);
+      const status = openaiError?.status || 500;
+      const message = openaiError?.message || "OpenAI API error";
+      const code = openaiError?.code || "unknown";
+      return new Response(
+        JSON.stringify({ 
+          error: `OpenAI Error (${status}): ${message}`,
+          code: code,
+          details: openaiError?.error?.message || message
+        }),
+        { status: status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     const content = response.choices?.[0]?.message?.content;
 
     if (!content) {
       console.error("No content in AI response");
       return new Response(
-        JSON.stringify({ error: "Resposta inválida da IA" }),
+        JSON.stringify({ error: "Resposta vazia da IA" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -161,7 +177,7 @@ Varie os pratos entre os dias. Use ingredientes comuns no Brasil.`;
     } catch (parseError) {
       console.error("Failed to parse AI response:", parseError, content);
       return new Response(
-        JSON.stringify({ error: "Erro ao processar resposta da IA" }),
+        JSON.stringify({ error: "Erro ao processar resposta da IA", rawContent: content.substring(0, 200) }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -219,10 +235,13 @@ Varie os pratos entre os dias. Use ingredientes comuns no Brasil.`;
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error("Unexpected error:", error);
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : "Erro inesperado" }),
+      JSON.stringify({ 
+        error: error instanceof Error ? error.message : "Erro inesperado",
+        stack: error?.stack?.substring(0, 300)
+      }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
