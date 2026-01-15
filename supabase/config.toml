@@ -1,7 +1,7 @@
 project_id = "flmukerjvwerzdwcmqnv"
 
 [functions.analyze-food]
-verify_jwt = false
+verify_jwt = true
 
 [functions.generate-plan]
 verify_jwt = true
