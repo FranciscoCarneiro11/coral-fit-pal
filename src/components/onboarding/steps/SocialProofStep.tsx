@@ -138,7 +138,7 @@ export const SocialProofStep: React.FC<SocialProofStepProps> = ({
                 <span className="text-white font-medium text-sm md:text-base">
                   {profileData?.currentWeight || 70}kg → {profileData?.targetWeight || 65}kg
                   <span className="text-primary ml-1 font-semibold">
-                    ({isWeightLoss ? "-" : "+"}{weightDiff}kg)
+                    ({isWeightLoss ? "-" : "+"}{weightDiff.toFixed(1)}kg)
                   </span>
                 </span>
               </div>
