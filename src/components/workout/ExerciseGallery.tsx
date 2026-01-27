@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Bookmark, HelpCircle, Heart, Dumbbell } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -409,9 +409,21 @@ const BodySilhouette: React.FC<{
     </svg>;
 };
 const ExerciseGallery: React.FC = () => {
-  const [selectedMuscle, setSelectedMuscle] = useState<string>("favoritos");
-  const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  
+  // Read muscle filter from URL, defaulting to "favoritos"
+  const muscleParam = searchParams.get("muscle");
+  const selectedMuscle = muscleParam && muscleGroups.some(m => m.id === muscleParam) 
+    ? muscleParam 
+    : "favoritos";
+  
+  // Update muscle selection via URL to preserve state on back navigation
+  const setSelectedMuscle = (muscle: string) => {
+    setSearchParams({ tab: "galeria", muscle }, { replace: true });
+  };
+  
+  const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
 
   // Load favorites from localStorage
   useEffect(() => {
