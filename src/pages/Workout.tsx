@@ -55,15 +55,15 @@ const Workout: React.FC = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialTab = searchParams.get("tab") === "gallery" ? "galeria" : "treino";
-  const [activeTab, setActiveTab] = useState<TabType>(initialTab);
+  
+  // Read tab from URL, defaulting to "treino"
+  const tabParam = searchParams.get("tab");
+  const activeTab: TabType = tabParam === "galeria" ? "galeria" : "treino";
 
-  // Clear the tab param after reading it to keep URL clean
-  useEffect(() => {
-    if (searchParams.get("tab")) {
-      setSearchParams({}, { replace: true });
-    }
-  }, []);
+  // Function to change tabs while preserving URL state for back navigation
+  const setActiveTab = (tab: TabType) => {
+    setSearchParams({ tab }, { replace: true });
+  };
   const [workoutPlan, setWorkoutPlan] = useState<WorkoutPlan | null>(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
