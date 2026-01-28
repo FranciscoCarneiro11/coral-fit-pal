@@ -113,21 +113,98 @@ serve(async (req) => {
 
     const openai = new OpenAI({ apiKey: openaiApiKey });
 
-    // Optimized prompt for faster generation
-    const systemPrompt = `You are a fitness AI. Return ONLY valid JSON. Generate EXACTLY ${workoutDays} workout sessions for days: ${dayNames.join(", ")}. Split: ${trainingSplit}`;
+    // Professional personal trainer system prompt
+    const systemPrompt = `Você é um personal trainer profissional especializado em hipertrofia e estética corporal, inspirado em metodologias modernas de musculação brasileira. Foco em divisões bem estruturadas, agrupamento muscular e sobrecarga progressiva.
 
-    const userPrompt = `Create fitness plan:
+REGRAS OBRIGATÓRIAS (NÃO QUEBRE):
+- NUNCA crie treinos Full Body
+- NUNCA crie planos genéricos
+- NÃO misture todos os grupos musculares no mesmo dia
+- SEMPRE use divisões clássicas de treino (ABC, AB, ABCD) adaptadas à frequência semanal
+- O treino deve parecer algo que um personal trainer experiente realmente prescreveria
 
-PROFILE: ${profile.gender || "unspecified"}, ${profile.age}yo, ${profile.height}cm, ${profile.weight}kg→${profile.target_weight}kg, Goal: ${profile.goal || "fitness"}, Activity: ${profile.activity_level || "moderate"}
-Focus: ${profile.body_zones?.join(", ") || "full body"}, Diet: ${profile.dietary_restrictions?.join(", ") || "none"}
+ESTILO DE TREINO:
+- Inspirado em bodybuilding para hipertrofia e estética
+- Volume de treino adequado (nem excessivo, nem insuficiente)
+- Priorize exercícios compostos no início; exercícios de isolamento no final
+- Períodos de descanso adequados entre séries (60-90s para compostos, 45-60s para isolamento)
 
-REQUIREMENTS:
-- EXACTLY ${workoutDays} workout days: ${dayNames.join(", ")}
-- 4-5 exercises per day
-- Split: ${trainingSplit}
+LÓGICA DE FREQUÊNCIA SEMANAL:
+- 2x/semana → Divisão AB (Upper/Lower ou Push/Pull)
+- 3x/semana → Divisão ABC (ex: Peito/Tríceps, Costas/Bíceps, Pernas/Ombros)
+- 4x/semana → ABCD ou Upper/Lower 2x
+- 5x/semana → ABCDE ou Push/Pull/Legs + Upper/Lower
+- 6x/semana → Push/Pull/Legs 2x (cada grupo 2x por semana)
 
-Return JSON:
-{"nutrition_plan":{"daily_calories":number,"macros":{"protein_g":number,"carbs_g":number,"fat_g":number},"meals":[{"name":"string","time":"HH:MM","calories":number}],"recommendations":["tip1"]},"workout_plan":{"weekly_schedule":[{"day":"${dayNames[0]}","focus":"Group","exercises":[{"name":"Exercise","sets":3,"reps":"10-12","rest":"60s"}]}],"recommendations":["tip1"]}}`;
+Responda APENAS em JSON válido. Gere EXATAMENTE ${workoutDays} sessões de treino para os dias: ${dayNames.join(", ")}.`;
+
+    // Get appropriate split based on days
+    const getSplitName = (days: number): string => {
+      switch (days) {
+        case 2: return "AB";
+        case 3: return "ABC";
+        case 4: return "ABCD";
+        case 5: return "ABCDE";
+        case 6: return "Push/Pull/Legs x2";
+        case 7: return "PPL + ABCD";
+        default: return "ABC";
+      }
+    };
+
+    const splitName = getSplitName(workoutDays);
+    const experienceLevel = profile.previous_experience ? "intermediário/avançado" : "iniciante";
+
+    const userPrompt = `Crie um plano de fitness personalizado:
+
+DADOS DO USUÁRIO:
+- Sexo: ${profile.gender === "male" ? "Masculino" : profile.gender === "female" ? "Feminino" : "Não especificado"}
+- Idade: ${profile.age} anos
+- Altura: ${profile.height}cm
+- Peso atual: ${profile.weight}kg → Peso meta: ${profile.target_weight}kg
+- Objetivo: ${profile.goal || "fitness"}
+- Nível de atividade: ${profile.activity_level || "moderado"}
+- Experiência prévia: ${experienceLevel}
+- Áreas de foco: ${profile.body_zones?.join(", ") || "corpo inteiro"}
+- Restrições alimentares: ${profile.dietary_restrictions?.join(", ") || "nenhuma"}
+- Obstáculos: ${profile.obstacles?.join(", ") || "nenhum"}
+
+REQUISITOS DO TREINO:
+- Frequência: EXATAMENTE ${workoutDays} dias por semana
+- Dias: ${dayNames.join(", ")}
+- Divisão recomendada: ${splitName}
+- 5-7 exercícios por dia (compostos primeiro, isolamento depois)
+- Séries: 3-4 por exercício
+- Repetições: 8-12 para hipertrofia, 12-15 para definição
+- Descanso: 60-90s para compostos, 45-60s para isolamento
+
+EXEMPLO DE DIVISÃO ABC (3 dias):
+- Dia A: Peito + Tríceps (Supino Reto, Supino Inclinado, Crucifixo, Tríceps Corda, Tríceps Francês)
+- Dia B: Costas + Bíceps (Puxada Frontal, Remada Baixa, Remada Curvada, Rosca Direta, Rosca Martelo)
+- Dia C: Pernas + Ombros (Agachamento, Leg Press, Cadeira Extensora, Desenvolvimento, Elevação Lateral)
+
+Retorne JSON no formato:
+{
+  "nutrition_plan": {
+    "daily_calories": number,
+    "macros": {"protein_g": number, "carbs_g": number, "fat_g": number},
+    "meals": [{"name": "Café da manhã", "time": "07:00", "calories": number}],
+    "recommendations": ["dica1", "dica2"]
+  },
+  "workout_plan": {
+    "split_name": "${splitName}",
+    "weekly_schedule": [
+      {
+        "day": "${dayNames[0]}",
+        "focus": "Peito + Tríceps",
+        "exercises": [
+          {"name": "Supino Reto", "sets": 4, "reps": "8-12", "rest": "90s"}
+        ]
+      }
+    ],
+    "recommendations": ["Dica de execução e progressão"],
+    "pro_tips": "Aumente a carga progressivamente a cada semana mantendo a técnica perfeita."
+  }
+}`;
 
     console.log("Calling OpenAI gpt-4o-mini...");
     const startTime = Date.now();
@@ -141,7 +218,7 @@ Return JSON:
           { role: "user", content: userPrompt },
         ],
         response_format: { type: "json_object" },
-        max_tokens: 2500,
+        max_tokens: 3500, // Increased for more detailed workout plans
         temperature: 0.7,
       });
     } catch (openaiError: any) {
@@ -217,11 +294,16 @@ Return JSON:
       JSON.stringify({ 
         success: true, 
         nutrition_plan: plan.nutrition_plan,
-        workout_plan: plan.workout_plan,
+        workout_plan: {
+          ...plan.workout_plan,
+          split_name: plan.workout_plan?.split_name || splitName,
+          pro_tips: plan.workout_plan?.pro_tips || null
+        },
         meta: {
           requested_days: workoutDays,
           generated_days: generatedDays,
-          training_split: trainingSplit
+          training_split: splitName,
+          experience_level: experienceLevel
         }
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
