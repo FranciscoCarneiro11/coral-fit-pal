@@ -1,10 +1,8 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Camera, X, Loader2, Sparkles, ImageIcon } from "lucide-react";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -27,6 +25,17 @@ export const FoodScannerModal: React.FC<FoodScannerModalProps> = ({
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
+
+  // Auto-trigger camera when modal opens
+  useEffect(() => {
+    if (open && !selectedImage) {
+      // Small delay to ensure modal is fully rendered
+      const timer = setTimeout(() => {
+        cameraInputRef.current?.click();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [open, selectedImage]);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -89,116 +98,115 @@ export const FoodScannerModal: React.FC<FoodScannerModalProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Camera className="w-5 h-5 text-primary" />
-            Scanner de Alimentos
-          </DialogTitle>
-        </DialogHeader>
+      <DialogContent className="sm:max-w-md p-0 overflow-hidden border-0">
+        {/* Hidden file inputs */}
+        <input
+          ref={cameraInputRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          onChange={handleFileSelect}
+          className="hidden"
+        />
+        <input
+          ref={galleryInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleFileSelect}
+          className="hidden"
+        />
 
-        <div className="space-y-4">
-          {/* Hidden file inputs */}
-          <input
-            ref={cameraInputRef}
-            type="file"
-            accept="image/*"
-            capture="environment"
-            onChange={handleFileSelect}
-            className="hidden"
-          />
-          <input
-            ref={galleryInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handleFileSelect}
-            className="hidden"
-          />
-
-          {/* Image Preview or Upload Area */}
-          {selectedImage ? (
-            <div className="relative">
-              <img
-                src={selectedImage}
-                alt="Preview"
-                className="w-full h-64 object-cover rounded-xl"
-              />
-              <Button
-                variant="outline"
-                size="icon"
-                className="absolute top-2 right-2 bg-background/80 backdrop-blur-sm"
-                onClick={() => {
-                  setSelectedImage(null);
-                  setSelectedFile(null);
-                }}
-              >
-                <X className="w-4 h-4" />
-              </Button>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 gap-4">
-              <button
-                onClick={triggerCameraInput}
-                className={cn(
-                  "h-40 border-2 border-dashed border-border rounded-xl",
-                  "flex flex-col items-center justify-center gap-3",
-                  "bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer"
-                )}
-              >
-                <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Camera className="w-7 h-7 text-primary" />
-                </div>
-                <p className="font-medium text-foreground text-sm">Câmera</p>
-              </button>
-              <button
-                onClick={triggerGalleryInput}
-                className={cn(
-                  "h-40 border-2 border-dashed border-border rounded-xl",
-                  "flex flex-col items-center justify-center gap-3",
-                  "bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer"
-                )}
-              >
-                <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
-                  <ImageIcon className="w-7 h-7 text-primary" />
-                </div>
-                <p className="font-medium text-foreground text-sm">Galeria</p>
-              </button>
-            </div>
-          )}
-
-          {/* Action Buttons */}
-          <div className="flex gap-3">
+        {/* Full-screen camera-style layout */}
+        <div className="relative min-h-[70vh] bg-black flex flex-col">
+          {/* Top bar with close and gallery buttons */}
+          <div className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between p-4">
             <Button
-              variant="outline"
-              className="flex-1"
+              variant="ghost"
+              size="icon"
+              className="text-white bg-black/40 hover:bg-black/60 backdrop-blur-sm rounded-full"
               onClick={handleClose}
-              disabled={isAnalyzing}
             >
-              Cancelar
+              <X className="w-5 h-5" />
             </Button>
+            
+            {/* Gallery button - top right */}
             <Button
-              className="flex-1 gap-2"
-              onClick={handleAnalyze}
-              disabled={!selectedImage || isAnalyzing}
+              variant="ghost"
+              size="icon"
+              className="text-white bg-black/40 hover:bg-black/60 backdrop-blur-sm rounded-full"
+              onClick={triggerGalleryInput}
             >
-              {isAnalyzing ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Analisando...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-4 h-4" />
-                  Analisar Alimento
-                </>
-              )}
+              <ImageIcon className="w-5 h-5" />
             </Button>
           </div>
 
-          {/* AI Info */}
-          <p className="text-xs text-center text-muted-foreground">
-            A IA irá identificar os alimentos e estimar os valores nutricionais
-          </p>
+          {/* Image Preview or Camera View Area */}
+          <div className="flex-1 flex items-center justify-center">
+            {selectedImage ? (
+              <img
+                src={selectedImage}
+                alt="Preview"
+                className="w-full h-full object-contain"
+              />
+            ) : (
+              <div className="flex flex-col items-center justify-center gap-4 text-white/70">
+                <div className="w-20 h-20 rounded-full border-2 border-white/30 flex items-center justify-center">
+                  <Camera className="w-10 h-10" />
+                </div>
+                <p className="text-sm">Aponte para o alimento</p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="mt-2 bg-white/10 border-white/30 text-white hover:bg-white/20"
+                  onClick={triggerCameraInput}
+                >
+                  Abrir Câmera
+                </Button>
+              </div>
+            )}
+          </div>
+
+          {/* Bottom action area */}
+          <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+            {selectedImage ? (
+              <div className="flex gap-3">
+                <Button
+                  variant="outline"
+                  className="flex-1 bg-white/10 border-white/30 text-white hover:bg-white/20"
+                  onClick={() => {
+                    setSelectedImage(null);
+                    setSelectedFile(null);
+                    triggerCameraInput();
+                  }}
+                  disabled={isAnalyzing}
+                >
+                  <Camera className="w-4 h-4 mr-2" />
+                  Nova Foto
+                </Button>
+                <Button
+                  className="flex-1 gap-2"
+                  onClick={handleAnalyze}
+                  disabled={isAnalyzing}
+                >
+                  {isAnalyzing ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Analisando...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4" />
+                      Analisar
+                    </>
+                  )}
+                </Button>
+              </div>
+            ) : (
+              <p className="text-xs text-center text-white/60">
+                Tire uma foto ou escolha da galeria (ícone no canto superior direito)
+              </p>
+            )}
+          </div>
         </div>
       </DialogContent>
     </Dialog>
