@@ -458,31 +458,49 @@ const ExerciseGallery: React.FC = () => {
   const selectedMuscleInfo = muscleGroups.find(m => m.id === selectedMuscle);
   return <div className="space-y-4">
       {/* Muscle Groups Horizontal Scroll */}
-      <ScrollArea className="w-full mt-4 [&>div]:overflow-visible">
-        <div className="flex gap-4 pt-4 pb-2 px-2">
-          {muscleGroups.map(muscle => <button key={muscle.id} onClick={() => setSelectedMuscle(muscle.id)} className={cn("flex-shrink-0 flex flex-col items-center gap-2 transition-all")}>
-              <div className={cn(
-                "w-20 h-20 transition-all duration-200 p-2 flex items-center justify-center border-2 rounded-xl",
-                selectedMuscle === muscle.id 
-                  ? "border-primary bg-primary/10 scale-[1.03] shadow-[0_0_12px_rgba(255,70,70,0.4)]" 
-                  : "border-border bg-card/50 hover:border-muted-foreground/50 hover:bg-card"
-              )}>
-                {muscle.customImage ? <img 
-                  src={muscle.customImage} 
-                  alt={muscle.name} 
-                  className={cn(
-                    "w-full h-full object-contain transition-all duration-200",
-                    selectedMuscle === muscle.id && "brightness-110 saturate-[1.2]"
-                  )} 
-                /> : <BodySilhouette zone={muscle.highlightZone} isSelected={selectedMuscle === muscle.id} />}
+      <ScrollArea className="w-full mt-2 [&>div]:overflow-visible">
+        <div className="flex gap-6 pt-3 pb-3 px-3">
+          {muscleGroups.map(muscle => (
+            <button 
+              key={muscle.id} 
+              onClick={() => setSelectedMuscle(muscle.id)} 
+              className="flex-shrink-0 flex flex-col items-center justify-center gap-1.5 min-w-[64px] py-2 px-1 transition-all"
+            >
+              {/* Icon container - no background, floating look */}
+              <div className="w-14 h-14 flex items-center justify-center transition-all duration-300">
+                {muscle.customImage ? (
+                  <img 
+                    src={muscle.customImage} 
+                    alt={muscle.name} 
+                    className={cn(
+                      "w-full h-full object-contain transition-all duration-300",
+                      selectedMuscle === muscle.id 
+                        ? "drop-shadow-[0_0_8px_rgba(255,70,70,0.8)] brightness-110 saturate-[1.3]" 
+                        : "opacity-60 hover:opacity-80"
+                    )} 
+                  />
+                ) : (
+                  <div className={cn(
+                    "w-full h-full transition-all duration-300",
+                    selectedMuscle === muscle.id 
+                      ? "[filter:drop-shadow(0_0_8px_rgba(255,70,70,0.8))]" 
+                      : "opacity-60 hover:opacity-80"
+                  )}>
+                    <BodySilhouette zone={muscle.highlightZone} isSelected={selectedMuscle === muscle.id} />
+                  </div>
+                )}
               </div>
+              {/* Label */}
               <span className={cn(
-                "text-xs font-medium transition-colors duration-200", 
-                selectedMuscle === muscle.id ? "text-primary font-semibold" : "text-muted-foreground"
+                "text-[11px] font-medium transition-all duration-300 text-center", 
+                selectedMuscle === muscle.id 
+                  ? "text-primary font-bold" 
+                  : "text-muted-foreground"
               )}>
                 {muscle.name}
               </span>
-            </button>)}
+            </button>
+          ))}
         </div>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
