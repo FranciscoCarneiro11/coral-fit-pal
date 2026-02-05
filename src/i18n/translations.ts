@@ -101,6 +101,7 @@ export const translations = {
       // Peito
       "chest-1": "Supino Reto com Barra",
       "chest-2": "Supino Inclinado com Halter",
+      "chest-8": "Voador Sentado",
      "chest-3": "Supino Inclinado",
      "chest-4": "Crucifixo",
      "chest-5": "Flexão de Braço",
@@ -275,6 +276,7 @@ export const translations = {
       // Chest
       "chest-1": "Barbell Bench Press",
       "chest-2": "Dumbbell Incline Bench Press",
+      "chest-8": "Seated Pec Fly",
      "chest-3": "Incline Bench Press",
      "chest-4": "Dumbbell Fly",
      "chest-5": "Push-up",
@@ -448,6 +450,7 @@ export const translations = {
    exercises: {
       // Pecho
       "chest-1": "Press de Banca con Barra",
+      "chest-8": "Aperturas en Máquina",
       "chest-2": "Press Inclinado con Mancuernas",
      "chest-3": "Press Inclinado",
      "chest-4": "Aperturas",
