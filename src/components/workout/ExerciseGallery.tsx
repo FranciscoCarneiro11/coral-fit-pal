@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 // Imagens customizadas de grupos musculares
 import peitoImg from "@/assets/muscle-groups/peito.png";
@@ -20,8 +21,7 @@ import todosImg from "@/assets/muscle-groups/todos.png"; // Will be used for fav
 
 interface GalleryExercise {
   id: string;
-  name: string;
-  muscleGroup: string;
+  muscleGroupId: string;
   videoUrl?: string;
   thumbnailUrl?: string;
 }
@@ -69,222 +69,173 @@ const exercisesByMuscle: Record<string, GalleryExercise[]> = {
   // Will be populated dynamically
   peito: [{
     id: "chest-2",
-    name: "Dumbbell Incline Bench Press",
-    muscleGroup: "Peito",
+    muscleGroupId: "peito",
     videoUrl: "/videos/supino_inclinado_com_halter.mp4",
     thumbnailUrl: "/images/exercises/dumbbell-incline-bench-press.jpeg"
   }, {
     id: "chest-3",
-    name: "Supino Inclinado",
-    muscleGroup: "Peito"
+    muscleGroupId: "peito"
   }, {
     id: "chest-4",
-    name: "Crucifixo",
-    muscleGroup: "Peito"
+    muscleGroupId: "peito"
   }, {
     id: "chest-5",
-    name: "Flexão de Braço",
-    muscleGroup: "Peito"
+    muscleGroupId: "peito"
   }, {
     id: "chest-6",
-    name: "Crossover",
-    muscleGroup: "Peito"
+    muscleGroupId: "peito"
   }, {
     id: "chest-7",
-    name: "Fly na Máquina",
-    muscleGroup: "Peito"
+    muscleGroupId: "peito"
   }],
   costas: [{
     id: "back-2",
-    name: "Seated Wide-grip Row",
-    muscleGroup: "Costas",
+    muscleGroupId: "costas",
     videoUrl: "/videos/remada_aberta_sentado.mp4",
     thumbnailUrl: "/images/exercises/seated-wide-grip-row.jpeg"
   }, {
     id: "back-3",
-    name: "Puxada Frontal",
-    muscleGroup: "Costas"
+    muscleGroupId: "costas"
   }, {
     id: "back-4",
-    name: "Remada Curvada",
-    muscleGroup: "Costas"
+    muscleGroupId: "costas"
   }, {
     id: "back-5",
-    name: "Barra Fixa",
-    muscleGroup: "Costas"
+    muscleGroupId: "costas"
   }, {
     id: "back-6",
-    name: "Remada Unilateral",
-    muscleGroup: "Costas"
+    muscleGroupId: "costas"
   }],
   ombros: [{
     id: "shoulder-2",
-    name: "Seated Shoulder Press",
-    muscleGroup: "Ombros",
+    muscleGroupId: "ombros",
     videoUrl: "/videos/shoulderpress.mp4",
     thumbnailUrl: "/images/exercises/seated-shoulder-press.jpeg"
   }, {
     id: "shoulder-3",
-    name: "Desenvolvimento",
-    muscleGroup: "Ombros"
+    muscleGroupId: "ombros"
   }, {
     id: "shoulder-4",
-    name: "Elevação Frontal",
-    muscleGroup: "Ombros"
+    muscleGroupId: "ombros"
   }, {
     id: "shoulder-5",
-    name: "Crucifixo Inverso",
-    muscleGroup: "Ombros"
+    muscleGroupId: "ombros"
   }, {
     id: "shoulder-6",
-    name: "Encolhimento",
-    muscleGroup: "Ombros"
+    muscleGroupId: "ombros"
   }],
   biceps: [{
     id: "biceps-1",
-    name: "Biceps Curl",
-    muscleGroup: "Bíceps",
+    muscleGroupId: "biceps",
     videoUrl: "/videos/biceps_cabo.mp4",
     thumbnailUrl: "/images/exercises/biceps-curl.jpeg"
   }, {
     id: "biceps-2",
-    name: "Hammer Curl",
-    muscleGroup: "Bíceps",
+    muscleGroupId: "biceps",
     videoUrl: "/videos/biceps_martelo.mp4",
     thumbnailUrl: "/images/exercises/hammer-curl.jpeg"
   }, {
     id: "biceps-3",
-    name: "Rosca Direta",
-    muscleGroup: "Bíceps"
+    muscleGroupId: "biceps"
   }, {
     id: "biceps-4",
-    name: "Rosca Alternada",
-    muscleGroup: "Bíceps"
+    muscleGroupId: "biceps"
   }, {
     id: "biceps-5",
-    name: "Rosca Concentrada",
-    muscleGroup: "Bíceps"
+    muscleGroupId: "biceps"
   }, {
     id: "biceps-6",
-    name: "Rosca Scott",
-    muscleGroup: "Bíceps"
+    muscleGroupId: "biceps"
   }],
   triceps: [{
     id: "triceps-2",
-    name: "Seated Bench Extension",
-    muscleGroup: "Tríceps",
+    muscleGroupId: "triceps",
     videoUrl: "/videos/triceps_frances.mp4",
     thumbnailUrl: "/images/exercises/seated-bench-extension.jpeg"
   }, {
     id: "triceps-3",
-    name: "Tríceps Pulley",
-    muscleGroup: "Tríceps"
+    muscleGroupId: "triceps"
   }, {
     id: "triceps-4",
-    name: "Tríceps Testa",
-    muscleGroup: "Tríceps"
+    muscleGroupId: "triceps"
   }, {
     id: "triceps-5",
-    name: "Mergulho",
-    muscleGroup: "Tríceps"
+    muscleGroupId: "triceps"
   }, {
     id: "triceps-6",
-    name: "Kickback",
-    muscleGroup: "Tríceps"
+    muscleGroupId: "triceps"
   }],
   quadriceps: [{
     id: "quad-1",
-    name: "Lever Leg Extension",
-    muscleGroup: "Quadríceps",
+    muscleGroupId: "quadriceps",
     videoUrl: "/videos/cadeira_extensora.mp4",
     thumbnailUrl: "/images/exercises/leg-extension.jpeg"
   }, {
     id: "quad-2",
-    name: "Agachamento",
-    muscleGroup: "Quadríceps"
+    muscleGroupId: "quadriceps"
   }, {
     id: "quad-3",
-    name: "Leg Press",
-    muscleGroup: "Quadríceps"
+    muscleGroupId: "quadriceps"
   }, {
     id: "quad-4",
-    name: "Agachamento Hack",
-    muscleGroup: "Quadríceps"
+    muscleGroupId: "quadriceps"
   }, {
     id: "quad-5",
-    name: "Avanço",
-    muscleGroup: "Quadríceps"
+    muscleGroupId: "quadriceps"
   }, {
     id: "quad-6",
-    name: "Agachamento Búlgaro",
-    muscleGroup: "Quadríceps"
+    muscleGroupId: "quadriceps"
   }],
   abdomen: [{
     id: "abs-1",
-    name: "Abdominal Crunch",
-    muscleGroup: "Abdômen"
+    muscleGroupId: "abdomen"
   }, {
     id: "abs-2",
-    name: "Prancha",
-    muscleGroup: "Abdômen"
+    muscleGroupId: "abdomen"
   }, {
     id: "abs-3",
-    name: "Elevação de Pernas",
-    muscleGroup: "Abdômen"
+    muscleGroupId: "abdomen"
   }, {
     id: "abs-4",
-    name: "Abdominal Bicicleta",
-    muscleGroup: "Abdômen"
+    muscleGroupId: "abdomen"
   }, {
     id: "abs-5",
-    name: "Prancha Lateral",
-    muscleGroup: "Abdômen"
+    muscleGroupId: "abdomen"
   }],
   posterior: [{
     id: "post-1",
-    name: "Stiff",
-    muscleGroup: "Posterior"
+    muscleGroupId: "posterior"
   }, {
     id: "post-2",
-    name: "Mesa Flexora",
-    muscleGroup: "Posterior"
+    muscleGroupId: "posterior"
   }, {
     id: "post-3",
-    name: "Flexora Deitado",
-    muscleGroup: "Posterior"
+    muscleGroupId: "posterior"
   }, {
     id: "post-4",
-    name: "Levantamento Terra",
-    muscleGroup: "Posterior"
+    muscleGroupId: "posterior"
   }, {
     id: "post-5",
-    name: "Good Morning",
-    muscleGroup: "Posterior"
+    muscleGroupId: "posterior"
   }, {
     id: "post-6",
-    name: "Cadeira Flexora",
-    muscleGroup: "Posterior"
+    muscleGroupId: "posterior"
   }],
   trapezio: [{
     id: "trap-1",
-    name: "Encolhimento com Barra",
-    muscleGroup: "Trapézio"
+    muscleGroupId: "trapezio"
   }, {
     id: "trap-2",
-    name: "Encolhimento com Halteres",
-    muscleGroup: "Trapézio"
+    muscleGroupId: "trapezio"
   }, {
     id: "trap-3",
-    name: "Remada Alta",
-    muscleGroup: "Trapézio"
+    muscleGroupId: "trapezio"
   }, {
     id: "trap-4",
-    name: "Face Pull",
-    muscleGroup: "Trapézio"
+    muscleGroupId: "trapezio"
   }, {
     id: "trap-5",
-    name: "Elevação Posterior",
-    muscleGroup: "Trapézio"
+    muscleGroupId: "trapezio"
   }]
 };
 
@@ -387,6 +338,7 @@ const BodySilhouette: React.FC<{
 const ExerciseGallery: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { t } = useLanguage();
   
   // Read muscle filter from URL, defaulting to "favoritos"
   const muscleParam = searchParams.get("muscle");
@@ -414,15 +366,27 @@ const ExerciseGallery: React.FC = () => {
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
+  // Helper to get exercise name from translations
+  const getExerciseName = (exerciseId: string): string => {
+    const exerciseTranslations = t.exercises as Record<string, string>;
+    return exerciseTranslations[exerciseId] || exerciseId;
+  };
+
+  // Helper to get muscle group name from translations
+  const getMuscleGroupName = (muscleGroupId: string): string => {
+    const muscleTranslations = t.muscleGroups as Record<string, string>;
+    return muscleTranslations[muscleGroupId] || muscleGroupId;
+  };
+
   const toggleFavorite = (exerciseId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     const newFavorites = favoriteIds.includes(exerciseId) ? favoriteIds.filter(id => id !== exerciseId) : [...favoriteIds, exerciseId];
     localStorage.setItem("favoriteExercises", JSON.stringify(newFavorites));
     setFavoriteIds(newFavorites);
     if (newFavorites.includes(exerciseId)) {
-      toast.success("Adicionado aos favoritos");
+      toast.success(t.workout.addedToFavorites);
     } else {
-      toast.success("Removido dos favoritos");
+      toast.success(t.workout.removedFromFavorites);
     }
   };
   const handleExerciseClick = (exercise: GalleryExercise) => {
@@ -447,7 +411,7 @@ const ExerciseGallery: React.FC = () => {
                 {muscle.customImage ? (
                   <img 
                     src={muscle.customImage} 
-                    alt={muscle.name} 
+                    alt={getMuscleGroupName(muscle.id)} 
                     className={cn(
                       "w-full h-full object-contain transition-all duration-300",
                       selectedMuscle === muscle.id 
@@ -473,7 +437,7 @@ const ExerciseGallery: React.FC = () => {
                   ? "text-primary font-bold" 
                   : "text-muted-foreground"
               )}>
-                {muscle.name}
+                {getMuscleGroupName(muscle.id)}
               </span>
             </button>
           ))}
@@ -484,19 +448,19 @@ const ExerciseGallery: React.FC = () => {
       {/* Section Title */}
       <div className="flex items-center justify-between">
         <h3 className="text-base font-medium text-foreground">
-          {selectedMuscle === "favoritos" ? "Seus favoritos" : `Exercícios de ${selectedMuscleInfo?.name}`}
+          {selectedMuscle === "favoritos" ? t.workout.yourFavorites : `${t.workout.exercisesOf} ${getMuscleGroupName(selectedMuscle)}`}
         </h3>
         <span className="text-sm text-muted-foreground">
-          {exercises.length} exercícios
+          {exercises.length} {t.workout.exercises}
         </span>
       </div>
 
       {/* Empty state for favorites */}
       {selectedMuscle === "favoritos" && exercises.length === 0 && <div className="flex flex-col items-center justify-center py-12 text-center">
           <Heart className="w-12 h-12 text-muted-foreground/50 mb-4" />
-          <p className="text-muted-foreground">Nenhum exercício favorito ainda</p>
+          <p className="text-muted-foreground">{t.workout.noFavoritesYet}</p>
           <p className="text-sm text-muted-foreground/70 mt-1">
-            Toque no ícone de favorito nos exercícios para adicioná-los aqui
+            {t.workout.tapToAddFavorites}
           </p>
         </div>}
 
@@ -518,19 +482,19 @@ const ExerciseGallery: React.FC = () => {
                 <HelpCircle className="w-4 h-4 text-white" />
               </button>
 
-              {/* Thumbnail image, video thumbnail or placeholder */}
-              {exercise.thumbnailUrl ? <img src={exercise.thumbnailUrl} alt={exercise.name} className="w-full h-full object-cover object-center" onError={e => {
+              {/* Thumbnail image, video thumbnail or placeholder */}  
+              {exercise.thumbnailUrl ? <img src={exercise.thumbnailUrl} alt={getExerciseName(exercise.id)} className="w-full h-full object-cover object-center" onError={e => {
             e.currentTarget.style.display = 'none';
-          }} /> : exercise.videoUrl ? <VideoThumbnail videoUrl={exercise.videoUrl} exerciseName={exercise.name} /> : <ExercisePlaceholder name={exercise.name} />}
+          }} /> : exercise.videoUrl ? <VideoThumbnail videoUrl={exercise.videoUrl} exerciseName={getExerciseName(exercise.id)} /> : <ExercisePlaceholder name={getExerciseName(exercise.id)} />}
             </div>
             
             {/* Exercise info */}
             <div className="p-3 bg-card">
               <h3 className="font-semibold text-foreground text-sm leading-tight">
-                {exercise.name}
+                {getExerciseName(exercise.id)}
               </h3>
               <p className="text-xs text-muted-foreground mt-0.5">
-                {exercise.muscleGroup}
+                {getMuscleGroupName(exercise.muscleGroupId)}
               </p>
             </div>
           </button>)}
