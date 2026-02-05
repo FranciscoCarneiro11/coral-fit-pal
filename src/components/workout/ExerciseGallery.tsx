@@ -528,14 +528,14 @@ const ExerciseGallery: React.FC = () => {
       <div className="grid grid-cols-2 gap-3">
         {exercises.map(exercise => <button key={exercise.id} onClick={() => handleExerciseClick(exercise)} className="bg-card rounded-2xl overflow-hidden border border-border shadow-card hover:shadow-fab transition-all active:scale-[0.98] text-left group">
             {/* Thumbnail */}
-            <div className="aspect-square bg-black relative flex items-center justify-center overflow-hidden">
+            <div className="aspect-square bg-neutral-200 dark:bg-neutral-700 relative flex items-center justify-center overflow-hidden">
               {/* Bookmark/Favorite icon */}
-              <button className="absolute top-2 left-2 w-8 h-8 rounded-full bg-black/40 flex items-center justify-center z-10" onClick={e => toggleFavorite(exercise.id, e)}>
+              <button className="absolute top-2 left-2 w-8 h-8 rounded-full bg-black/30 flex items-center justify-center z-10" onClick={e => toggleFavorite(exercise.id, e)}>
                 <Bookmark className={cn("w-4 h-4 text-white", favoriteIds.includes(exercise.id) && "fill-white")} />
               </button>
               
               {/* Help icon */}
-              <button className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/40 flex items-center justify-center z-10" onClick={e => {
+              <button className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/30 flex items-center justify-center z-10" onClick={e => {
             e.stopPropagation();
             handleExerciseClick(exercise);
           }}>
