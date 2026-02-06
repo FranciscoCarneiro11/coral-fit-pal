@@ -23,6 +23,7 @@ const allExercises: Record<string, { muscleGroupId: string; videoUrl?: string; d
   // Costas
   "back-1": { muscleGroupId: "costas", videoUrl: "/videos/pulldown.mp4", descriptionKey: "back-1" },
   "back-2": { muscleGroupId: "costas", videoUrl: "/videos/remada_aberta_sentado.mp4", descriptionKey: "back-2" },
+  "back-7": { muscleGroupId: "costas", videoUrl: "/videos/remada_sentado_triangulo.mp4", descriptionKey: "back-7" },
   "back-3": { muscleGroupId: "costas", descriptionKey: "back-3" },
   "back-4": { muscleGroupId: "costas", descriptionKey: "back-4" },
   "back-5": { muscleGroupId: "costas", descriptionKey: "back-5" },
