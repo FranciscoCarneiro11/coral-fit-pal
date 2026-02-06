@@ -109,21 +109,17 @@ const Auth: React.FC = () => {
             console.warn("Could not log initial weight:", weightError.message);
           }
 
-          // 3. Clear localStorage and mark plan generation as pending
+          // 3. Clear localStorage
           localStorage.removeItem("userProfile");
           localStorage.removeItem("pendingPlanGeneration");
-          localStorage.setItem("planGenerationInProgress", "true");
           
           toast({
             title: "Conta criada!",
-            description: "Gerando seu plano personalizado em segundo plano...",
+            description: "Bem-vindo! Acesse a aba Treino para gerar seu plano personalizado.",
           });
 
-          // 4. Navigate to dashboard IMMEDIATELY (don't wait for AI)
+          // 4. Navigate to dashboard
           navigate("/dashboard", { replace: true });
-
-          // 5. Trigger background plan generation (fire and forget)
-          triggerBackgroundPlanGeneration(profile);
         }
       } catch (err) {
         console.error("Error processing post-auth:", err);
@@ -134,40 +130,6 @@ const Auth: React.FC = () => {
     }
   };
 
-  const triggerBackgroundPlanGeneration = async (profile: any) => {
-    try {
-      const { data, error } = await supabase.functions.invoke("generate-plan", {
-        body: { profile },
-      });
-
-      if (error || data?.error) {
-        console.error("Background plan generation failed:", error || data?.error);
-        localStorage.setItem("planGenerationFailed", "true");
-        localStorage.removeItem("planGenerationInProgress");
-        return;
-      }
-
-      // Get current user and save plans to profile
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user && data?.nutrition_plan && data?.workout_plan) {
-        await supabase
-          .from("profiles")
-          .update({
-            nutrition_plan: data.nutrition_plan,
-            workout_plan: data.workout_plan,
-          })
-          .eq("user_id", user.id);
-      }
-
-      localStorage.removeItem("planGenerationInProgress");
-      localStorage.removeItem("planGenerationFailed");
-      console.log("Background plan generation completed successfully");
-    } catch (err) {
-      console.error("Background plan generation error:", err);
-      localStorage.setItem("planGenerationFailed", "true");
-      localStorage.removeItem("planGenerationInProgress");
-    }
-  };
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
