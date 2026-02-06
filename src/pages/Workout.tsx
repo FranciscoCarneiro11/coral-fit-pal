@@ -72,7 +72,6 @@ const Workout: React.FC = () => {
   const [workoutPlan, setWorkoutPlan] = useState<WorkoutPlan | null>(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
-  const [isBackgroundGenerating, setIsBackgroundGenerating] = useState(false);
   const [hasPlanError, setHasPlanError] = useState(false);
   
   // Derive selectedDay from URL param and workoutPlan
@@ -105,26 +104,11 @@ const Workout: React.FC = () => {
 
   const weekDayNames = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
 
-  // Check for background generation status
-  useEffect(() => {
-    const checkBackgroundGeneration = () => {
-      const inProgress = localStorage.getItem("planGenerationInProgress") === "true";
-      const failed = localStorage.getItem("planGenerationFailed") === "true";
-      setIsBackgroundGenerating(inProgress);
-      setHasPlanError(failed);
-    };
-
-    checkBackgroundGeneration();
-    // Poll for updates while generating
-    const interval = setInterval(checkBackgroundGeneration, 2000);
-    return () => clearInterval(interval);
-  }, []);
-
   useEffect(() => {
     if (user) {
       fetchWorkoutPlan();
     }
-  }, [user, isBackgroundGenerating]);
+  }, [user]);
 
   const fetchWorkoutPlan = async () => {
     try {
@@ -326,26 +310,7 @@ const Workout: React.FC = () => {
         {activeTab === "treino" ? (
           // "Seu Treino" Content
           <>
-            {isBackgroundGenerating ? (
-              // Background generation in progress
-              <div className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4">
-                <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mb-6">
-                  <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-                </div>
-                
-                <h2 className="text-2xl font-bold text-foreground mb-3">
-                  Gerando seu plano personalizado...
-                </h2>
-                
-                <p className="text-muted-foreground mb-4 max-w-sm">
-                  Nosso IA está criando um plano de treino sob medida para você. Isso pode levar alguns segundos.
-                </p>
-
-                <p className="text-sm text-muted-foreground animate-pulse">
-                  Aguarde enquanto processamos seus dados...
-                </p>
-              </div>
-            ) : !workoutPlan ? (
+          {!workoutPlan ? (
               // No workout plan - show generation prompt (with retry if failed)
               <div className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4">
                 <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mb-6">
