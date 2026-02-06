@@ -77,11 +77,6 @@ const exercisesByMuscle: Record<string, GalleryExercise[]> = {
     videoUrl: "/videos/supino_inclinado_com_halter.mp4",
     thumbnailUrl: "/images/exercises/dumbbell-incline-bench-press.jpeg"
   }, {
-    id: "chest-8",
-    muscleGroupId: "peito",
-    videoUrl: "/videos/voador.mp4",
-    thumbnailUrl: "/images/exercises/voador-sentado.png"
-  }, {
     id: "chest-3",
     muscleGroupId: "peito",
     videoUrl: "/videos/supino_inclinado_barra.mp4",
