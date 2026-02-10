@@ -323,6 +323,7 @@ export const translations = {
      "shoulder-5": "Reverse Fly",
      "shoulder-6": "Shrugs",
      "shoulder-7": "Incline Bench Lateral Raise",
+     "shoulder-8": "Machine Shoulder Press",
      // Biceps
      "biceps-1": "Cable Curl",
      "biceps-2": "Hammer Curl",
