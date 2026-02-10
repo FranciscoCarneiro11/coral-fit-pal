@@ -133,6 +133,7 @@ export const translations = {
      "shoulder-5": "Crucifixo Inverso",
      "shoulder-6": "Encolhimento",
      "shoulder-7": "Elevação Lateral Inclinado no Banco",
+     "shoulder-8": "Desenvolvimento Máquina",
      // Bíceps
      "biceps-1": "Rosca no Cabo",
      "biceps-2": "Rosca Martelo",
