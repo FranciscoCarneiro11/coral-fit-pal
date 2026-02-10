@@ -313,8 +313,9 @@ export const translations = {
      "back-4": "Bent-Over Row",
      "back-5": "Pull-up",
      "back-6": "Single-Arm Row",
-     // Shoulders
-     "shoulder-2": "Seated Shoulder Press",
+      // Shoulders
+      "shoulder-1": "Lateral Raise",
+      "shoulder-2": "Seated Shoulder Press",
      "shoulder-3": "Overhead Press",
      "shoulder-4": "Front Raise",
      "shoulder-5": "Reverse Fly",
