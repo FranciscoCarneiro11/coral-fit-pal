@@ -501,8 +501,9 @@ export const translations = {
      "back-4": "Remo con Barra",
      "back-5": "Dominadas",
      "back-6": "Remo Unilateral",
-     // Hombros
-     "shoulder-2": "Press de Hombros Sentado",
+      // Hombros
+      "shoulder-1": "Elevación Lateral",
+      "shoulder-2": "Press de Hombros Sentado",
      "shoulder-3": "Press Militar",
      "shoulder-4": "Elevación Frontal",
      "shoulder-5": "Pájaro",
