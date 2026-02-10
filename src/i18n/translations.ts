@@ -140,6 +140,7 @@ export const translations = {
       "shoulder-12": "Elevação Lateral Invertida",
       "shoulder-13": "Crucifixo Inverso no Cabo com Suporte de Peito",
       "shoulder-14": "Desenvolvimento Arnold",
+      "shoulder-15": "Crucifixo Invertido com Halter",
       // Bíceps
      "biceps-1": "Rosca no Cabo",
      "biceps-2": "Rosca Martelo",
@@ -336,6 +337,7 @@ export const translations = {
       "shoulder-12": "Reverse Lateral Raise",
       "shoulder-13": "Cable Reverse Fly with Chest Support",
       "shoulder-14": "Arnold Press",
+      "shoulder-15": "Dumbbell Reverse Fly",
       // Biceps
      "biceps-1": "Cable Curl",
      "biceps-2": "Hammer Curl",
@@ -532,6 +534,7 @@ export const translations = {
       "shoulder-12": "Elevación Lateral Invertida",
       "shoulder-13": "Crucifijo Inverso en Cable con Soporte de Pecho",
       "shoulder-14": "Press Arnold",
+      "shoulder-15": "Crucifijo Invertido con Mancuerna",
       // Bíceps
      "biceps-1": "Curl en Polea",
      "biceps-2": "Curl Martillo",
