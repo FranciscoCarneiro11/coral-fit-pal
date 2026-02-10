@@ -134,8 +134,9 @@ export const translations = {
      "shoulder-6": "Encolhimento",
      "shoulder-7": "Elevação Lateral Inclinado no Banco",
      "shoulder-8": "Desenvolvimento Máquina",
-     "shoulder-9": "Elevação Frontal na Polia",
-     // Bíceps
+      "shoulder-9": "Elevação Frontal na Polia",
+      "shoulder-10": "Elevação Lateral Máquina",
+      // Bíceps
      "biceps-1": "Rosca no Cabo",
      "biceps-2": "Rosca Martelo",
      "biceps-3": "Rosca Direta",
@@ -325,8 +326,9 @@ export const translations = {
      "shoulder-6": "Shrugs",
      "shoulder-7": "Incline Bench Lateral Raise",
      "shoulder-8": "Machine Shoulder Press",
-     "shoulder-9": "Cable Front Raise",
-     // Biceps
+      "shoulder-9": "Cable Front Raise",
+      "shoulder-10": "Machine Lateral Raise",
+      // Biceps
      "biceps-1": "Cable Curl",
      "biceps-2": "Hammer Curl",
      "biceps-3": "Barbell Curl",
@@ -516,8 +518,9 @@ export const translations = {
      "shoulder-6": "Encogimiento de Hombros",
      "shoulder-7": "Elevación Lateral Inclinado en Banco",
      "shoulder-8": "Press de Hombros en Máquina",
-     "shoulder-9": "Elevación Frontal en Polea",
-     // Bíceps
+      "shoulder-9": "Elevación Frontal en Polea",
+      "shoulder-10": "Elevación Lateral en Máquina",
+      // Bíceps
      "biceps-1": "Curl en Polea",
      "biceps-2": "Curl Martillo",
      "biceps-3": "Curl con Barra",
