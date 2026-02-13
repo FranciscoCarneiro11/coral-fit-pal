@@ -56,6 +56,7 @@ const allExercises: Record<string, { muscleGroupId: string; videoUrl?: string; d
   "shoulder-16": { muscleGroupId: "ombros", videoUrl: "/videos/elevacao_lateral_sentado.mp4", descriptionKey: "shoulder-16" },
   "shoulder-17": { muscleGroupId: "ombros", videoUrl: "/videos/facepull_com_corda.mp4", descriptionKey: "shoulder-17" },
   "shoulder-18": { muscleGroupId: "ombros", videoUrl: "/videos/elevacao_lateral_maquina_2.mp4", descriptionKey: "shoulder-18" },
+  "shoulder-19": { muscleGroupId: "ombros", videoUrl: "/videos/desenvolvimento_militar_barra.mp4", descriptionKey: "shoulder-19" },
   
   // Bíceps
   "biceps-1": { muscleGroupId: "biceps", videoUrl: "/videos/biceps_cabo.mp4", descriptionKey: "biceps-1" },
