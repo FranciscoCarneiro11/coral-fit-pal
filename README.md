@@ -22,4 +22,4 @@ O **NutriOne** é uma plataforma integrada de saúde que utiliza Inteligência A
 Este projeto foi desenvolvido com foco em **agilidade e time-to-market**. Utilize a plataforma Lovable para acelerar o desenvolvimento do frontend e infraestrutura, permitindo-me focar na lógica de integração da IA e na experiência do utilizador final.
 
 ---
-💡 *Projeto co-fundado e desenvolvido por mim, focado em resolver problemas reais de saúde através da tecnologia.*
+*Projeto co-fundado e desenvolvido por mim, focado em resolver problemas reais de saúde através da tecnologia.*
