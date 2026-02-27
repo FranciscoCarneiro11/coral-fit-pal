@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { AppShell, AppHeader, AppContent } from "@/components/layout/AppShell";
 import { BottomNavigation } from "@/components/navigation/BottomNavigation";
 import { Sparkles, Dumbbell, RefreshCw, History, Play } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -49,6 +50,41 @@ const dayMapping: { [key: string]: string } = {
 };
 
 type TabType = "treino" | "galeria";
+
+const FloatingStartButton: React.FC<{ onClick: () => void }> = ({ onClick }) => {
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setVisible(window.scrollY < 80);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          initial={{ opacity: 0, y: 20, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 20, scale: 0.9 }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
+          className="fixed bottom-24 right-4 z-40"
+        >
+          <Button
+            onClick={onClick}
+            size="lg"
+            className="gap-2 shadow-fab rounded-full px-5"
+          >
+            <Play className="w-5 h-5" />
+            Iniciar treino
+          </Button>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
 
 const Workout: React.FC = () => {
   const { user } = useAuth();
@@ -405,19 +441,8 @@ const Workout: React.FC = () => {
         )}
       </AppContent>
 
-      {/* Floating "Start Workout" button */}
-      <div className="fixed bottom-24 left-0 right-0 px-6 z-40">
-        <div className="max-w-md mx-auto md:max-w-2xl lg:max-w-4xl">
-          <Button
-            onClick={() => navigate("/active-workout")}
-            className="w-full gap-2 shadow-fab"
-            size="lg"
-          >
-            <Play className="w-5 h-5" />
-            Iniciar um treino vazio
-          </Button>
-        </div>
-      </div>
+      {/* Floating "Start Workout" FAB */}
+      <FloatingStartButton onClick={() => navigate("/active-workout")} />
 
       <BottomNavigation />
     </AppShell>
