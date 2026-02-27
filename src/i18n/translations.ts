@@ -407,7 +407,8 @@ export const translations = {
       "post-8": "Unilateral Leg Curl Machine",
       "post-9": "Lying Leg Curl",
       "post-10": "RDL",
-      "post-11": "Kettlebell Swing",
+       "post-11": "Kettlebell Swing",
+       "post-12": "Stiff",
       // Trapezius
      "trap-1": "Barbell Shrugs",
      "trap-2": "Dumbbell Shrugs",
