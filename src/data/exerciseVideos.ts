@@ -113,10 +113,10 @@ const exerciseVideoDatabase: Record<string, ExerciseMedia> = {
   "prone leg curl": { videoUrl: "/videos/mesa_flexora.mp4", thumbnailUrl: "/images/exercises/mesa-flexora.png" },
   "flexora deitado": { videoUrl: "/videos/mesa_flexora.mp4", thumbnailUrl: "/images/exercises/mesa-flexora.png" },
   
-  "stiff": { videoUrl: "/videos/stiff.mp4", thumbnailUrl: "/images/exercises/stiff.png" },
-  "stiff-legged deadlift": { videoUrl: "/videos/stiff.mp4", thumbnailUrl: "/images/exercises/stiff.png" },
-  "stiff legged deadlift": { videoUrl: "/videos/stiff.mp4", thumbnailUrl: "/images/exercises/stiff.png" },
-  "peso muerto rumano": { videoUrl: "/videos/stiff.mp4", thumbnailUrl: "/images/exercises/stiff.png" },
+  "stiff": { videoUrl: "/videos/stiff_verdadeiro.mp4", thumbnailUrl: "/images/exercises/stiff-verdadeiro.png" },
+  "stiff-legged deadlift": { videoUrl: "/videos/stiff_verdadeiro.mp4", thumbnailUrl: "/images/exercises/stiff-verdadeiro.png" },
+  "stiff legged deadlift": { videoUrl: "/videos/stiff_verdadeiro.mp4", thumbnailUrl: "/images/exercises/stiff-verdadeiro.png" },
+  "peso muerto rumano": { videoUrl: "/videos/stiff_verdadeiro.mp4", thumbnailUrl: "/images/exercises/stiff-verdadeiro.png" },
   
   "levantamento terra com kettlebell": { videoUrl: "/videos/kettlebell_swing.mp4", thumbnailUrl: "/images/exercises/kettlebell-swing.png" },
   "kettlebell swing": { videoUrl: "/videos/kettlebell_swing.mp4", thumbnailUrl: "/images/exercises/kettlebell-swing.png" },
