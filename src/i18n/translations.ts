@@ -191,7 +191,8 @@ export const translations = {
       "post-8": "Cadeira Flexora Unilateral",
       "post-9": "Mesa Flexora",
       "post-10": "RDL",
-      "post-11": "Levantamento Terra com Kettlebell",
+       "post-11": "Levantamento Terra com Kettlebell",
+       "post-12": "Stiff",
       // Trapézio
      "trap-1": "Encolhimento com Barra",
      "trap-2": "Encolhimento com Halteres",
