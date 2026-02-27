@@ -194,6 +194,7 @@ export const translations = {
        "post-11": "Levantamento Terra com Kettlebell",
        "post-12": "Stiff",
        "post-13": "Flexora em Pé",
+       "post-14": "Mesa Flexora",
       // Trapézio
      "trap-1": "Encolhimento com Barra",
      "trap-2": "Encolhimento com Halteres",
