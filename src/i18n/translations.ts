@@ -186,8 +186,9 @@ export const translations = {
      "post-3": "Flexora Deitado",
      "post-4": "Levantamento Terra",
      "post-5": "Good Morning",
-     "post-6": "Cadeira Flexora",
-     // Trapézio
+      "post-6": "Cadeira Flexora",
+      "post-7": "Flexão de Perna Reversa Assistida",
+      // Trapézio
      "trap-1": "Encolhimento com Barra",
      "trap-2": "Encolhimento com Halteres",
      "trap-3": "Remada Alta",
@@ -396,8 +397,9 @@ export const translations = {
      "post-3": "Seated Leg Curl",
      "post-4": "Deadlift",
      "post-5": "Good Morning",
-     "post-6": "Leg Curl Machine",
-     // Trapezius
+      "post-6": "Leg Curl Machine",
+      "post-7": "Assisted Reverse Leg Curl",
+      // Trapezius
      "trap-1": "Barbell Shrugs",
      "trap-2": "Dumbbell Shrugs",
      "trap-3": "Upright Row",
@@ -606,8 +608,9 @@ export const translations = {
      "post-3": "Curl de Piernas Sentado",
      "post-4": "Peso Muerto",
      "post-5": "Buenos Días",
-     "post-6": "Curl de Piernas en Máquina",
-     // Trapecio
+      "post-6": "Curl de Piernas en Máquina",
+      "post-7": "Flexión de Pierna Reversa Asistida",
+      // Trapecio
      "trap-1": "Encogimiento con Barra",
      "trap-2": "Encogimiento con Mancuernas",
      "trap-3": "Remo al Mentón",
