@@ -189,6 +189,7 @@ export const translations = {
       "post-6": "Cadeira Flexora",
       "post-7": "Flexão de Perna Reversa Assistida",
       "post-8": "Cadeira Flexora Unilateral",
+      "post-9": "Mesa Flexora",
       // Trapézio
      "trap-1": "Encolhimento com Barra",
      "trap-2": "Encolhimento com Halteres",
