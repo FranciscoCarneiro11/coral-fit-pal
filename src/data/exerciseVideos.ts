@@ -97,6 +97,11 @@ const exerciseVideoDatabase: Record<string, ExerciseMedia> = {
   "cadeira extensora": { videoUrl: "/videos/cadeira_extensora.mp4", thumbnailUrl: "/images/exercises/leg-extension.jpeg" },
   "extensora": { videoUrl: "/videos/cadeira_extensora.mp4", thumbnailUrl: "/images/exercises/leg-extension.jpeg" },
   "machine leg extension": { videoUrl: "/videos/cadeira_extensora.mp4", thumbnailUrl: "/images/exercises/leg-extension.jpeg" },
+  
+  // Posterior / Hamstrings
+  "flexao de perna reversa assistida": { videoUrl: "/videos/flexao_perna_reversa_assistida.mp4", thumbnailUrl: "/images/exercises/flexao-perna-reversa-assistida.png" },
+  "flexão de perna reversa assistida": { videoUrl: "/videos/flexao_perna_reversa_assistida.mp4", thumbnailUrl: "/images/exercises/flexao-perna-reversa-assistida.png" },
+  "assisted reverse leg curl": { videoUrl: "/videos/flexao_perna_reversa_assistida.mp4", thumbnailUrl: "/images/exercises/flexao-perna-reversa-assistida.png" },
 };
 
 // Function to find video for an exercise name

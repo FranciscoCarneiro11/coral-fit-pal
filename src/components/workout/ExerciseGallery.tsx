@@ -288,7 +288,12 @@ const exercisesByMuscle: Record<string, GalleryExercise[]> = {
     thumbnailUrl: "/images/exercises/leg-extension.jpeg"
   }],
   abdomen: [],
-  posterior: [],
+  posterior: [{
+    id: "post-7",
+    muscleGroupId: "posterior",
+    videoUrl: "/videos/flexao_perna_reversa_assistida.mp4",
+    thumbnailUrl: "/images/exercises/flexao-perna-reversa-assistida.png"
+  }],
   trapezio: []
 };
 

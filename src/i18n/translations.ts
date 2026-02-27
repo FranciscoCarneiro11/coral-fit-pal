@@ -608,8 +608,9 @@ export const translations = {
      "post-3": "Curl de Piernas Sentado",
      "post-4": "Peso Muerto",
      "post-5": "Buenos Días",
-     "post-6": "Curl de Piernas en Máquina",
-     // Trapecio
+      "post-6": "Curl de Piernas en Máquina",
+      "post-7": "Flexión de Pierna Reversa Asistida",
+      // Trapecio
      "trap-1": "Encogimiento con Barra",
      "trap-2": "Encogimiento con Mancuernas",
      "trap-3": "Remo al Mentón",
