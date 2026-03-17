@@ -2,8 +2,8 @@
 
 **Plataforma web de nutrição e fitness personalizada com IA**
 
-🌐 **Live:** [nutrione.app](https://nutrione.app) · 
-👥 **Utilizado por +25 utilizadores**
+**Live:** [nutrione.app](https://nutrione.app) · 
+**Utilizado por +25 utilizadores**
 
 ---
 
